@@ -1,0 +1,2045 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generator Prompt AI - Perencanaan Pembelajaran Mendalam</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        kemdikbud: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            600: '#1d4ed8',
+                            700: '#1e40af',
+                            800: '#1e3a8a',
+                            900: '#172554',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom Scrollbar for smooth desktop experience */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        .red-highlight {
+            color: #dc2626;
+            background-color: #fef2f2;
+            font-weight: 600;
+            padding: 1px 4px;
+            border-radius: 4px;
+            border-bottom: 1px dashed #fca5a5;
+        }
+        .plain-text-mode .red-highlight {
+            color: inherit;
+            background-color: transparent;
+            font-weight: inherit;
+            padding: 0;
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased selection:bg-blue-100 selection:text-blue-900">
+
+    <!-- Top Navigation Header -->
+    <header class="bg-gradient-to-r from-kemdikbud-900 via-kemdikbud-800 to-kemdikbud-700 text-white shadow-md sticky top-0 z-30">
+        <div class="max-w-[1600px] mx-auto px-4 sm:px-6 py-3.5 flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+                <div class="bg-white/15 p-2 rounded-xl backdrop-blur-sm border border-white/20">
+                    <i data-lucide="sparkles" class="w-6 h-6 text-amber-300"></i>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h1 class="text-base sm:text-lg font-bold tracking-tight">Generator Prompt AI RPP Mendalam</h1>
+                        <span class="hidden md:inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-blue-500/30 text-blue-100 border border-blue-400/30">
+                            Kurikulum Merdeka &bull; PID &bull; Rumah Pendidikan
+                        </span>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-2.5 mt-0.5">
+                        <p class="text-xs text-blue-200 hidden sm:block">Susun prompt terstruktur berbasis keputusan profesional guru siap pakai untuk AI</p>
+                        <span class="hidden sm:inline-block text-blue-300/60">&bull;</span>
+                        <span class="text-sm sm:text-base font-extrabold tracking-wide text-amber-300">Developer: Z. ASMARADY</span>
+                    </div>
+                    <!-- Baris Kode Akses tepat di bawah Developer -->
+                    <div id="header-access-bar" class="mt-2 flex flex-wrap items-center gap-2">
+                        <form id="inline-access-form" onsubmit="handleAccessSubmit(event)" class="flex flex-wrap items-center gap-1.5">
+                            <label for="access-code-input" class="inline-flex items-center gap-1 text-[11px] font-semibold text-amber-200">
+                                <i data-lucide="key-round" class="w-3.5 h-3.5 text-amber-300"></i>
+                                <span>Kode Akses:</span>
+                            </label>
+                            <input type="text" id="access-code-input" autocomplete="off"
+                                placeholder="Masukkan kode..."
+                                class="px-2.5 py-1 text-xs font-mono uppercase tracking-wider bg-slate-900/75 text-white placeholder-blue-200/60 border border-white/25 rounded-lg focus:bg-slate-900 focus:ring-2 focus:ring-amber-400 focus:border-amber-400 outline-none transition w-36 sm:w-44">
+                            <button type="submit" id="btn-unlock-access"
+                                class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold bg-amber-400 hover:bg-amber-300 text-slate-900 transition cursor-pointer">
+                                <i data-lucide="unlock" class="w-3 h-3"></i>
+                                <span>Aktifkan</span>
+                            </button>
+                        </form>
+                        <div id="access-active-badge" class="hidden items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-emerald-500/20 text-emerald-200 border border-emerald-400/30">
+                            <i data-lucide="shield-check" class="w-3.5 h-3.5 text-emerald-300"></i>
+                            <span>Akses Aktif</span>
+                            <button type="button" onclick="lockAccess()"
+                                class="ml-1 underline text-amber-200 hover:text-white cursor-pointer"
+                                title="Kunci kembali menu">Kunci</button>
+                        </div>
+                        <span id="access-error-msg" class="hidden text-[11px] font-semibold text-rose-200 bg-rose-600/80 px-2 py-0.5 rounded-md">
+                            Kode tidak valid!
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Controls in Header -->
+            <div class="flex items-center gap-2">
+                <button type="button" onclick="resetToDefault()"
+                    class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium bg-white/10 hover:bg-white/20 text-white border border-white/15 transition cursor-pointer"
+                    title="Kembalikan ke data contoh">
+                    <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                    <span>Contoh Default</span>
+                </button>
+                <button type="button" onclick="clearForm()"
+                    class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium bg-rose-500/20 hover:bg-rose-500/30 text-rose-100 border border-rose-400/30 transition cursor-pointer"
+                    title="Kosongkan semua isian">
+                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                    <span>Kosongkan</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Tab Switcher (visible only on < lg screens) -->
+        <div class="lg:hidden bg-kemdikbud-900/90 border-t border-white/10 px-4 flex">
+            <button type="button" id="tab-form-btn" onclick="switchMobileTab('form')"
+                class="flex-1 py-2.5 text-xs font-semibold text-center border-b-2 border-amber-400 text-white transition">
+                1. Form Isian
+            </button>
+            <button type="button" id="tab-preview-btn" onclick="switchMobileTab('preview')"
+                class="flex-1 py-2.5 text-xs font-semibold text-center border-b-2 border-transparent text-blue-200 hover:text-white transition">
+                2. Pratinjau Prompt
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Split-Screen Workspace -->
+    <main id="main-workspace" class="max-w-[1600px] mx-auto flex flex-col lg:flex-row lg:h-[calc(100vh-104px)] overflow-hidden transition">
+
+        <!-- LEFT PANEL: Input Form -->
+        <section id="panel-form" class="w-full lg:w-[48%] xl:w-[45%] lg:h-full overflow-y-auto p-4 sm:p-6 space-y-5 border-r border-slate-200 bg-slate-50/70">
+
+            <!-- SECTION 1: KONTEKS KELAS -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
+                <div class="bg-kemdikbud-900 text-white px-4 py-3 flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <span class="w-6 h-6 rounded-lg bg-blue-500 text-white text-xs font-bold flex items-center justify-center">1</span>
+                        <h2 class="font-semibold text-sm tracking-wide">KONTEKS KELAS</h2>
+                    </div>
+                    <span class="text-[11px] text-blue-200">Identitas &amp; Situasi</span>
+                </div>
+                <div class="p-4 sm:p-5 space-y-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Jenjang / Kelas <span class="text-rose-600">*</span></label>
+                            <select id="jenjang" onchange="handleJenjangChange()"
+                                class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+                                <option value="PAUD (TK A)">PAUD (TK A)</option>
+                                <option value="PAUD (TK B)">PAUD (TK B)</option>
+                                <option value="SD/I">SD/I (Kelas 1)</option>
+                                <option value="SD/II">SD/II (Kelas 2)</option>
+                                <option value="SD/III" selected>SD/III (Kelas 3)</option>
+                                <option value="SD/IV">SD/IV (Kelas 4)</option>
+                                <option value="SD/V">SD/V (Kelas 5)</option>
+                                <option value="SD/VI">SD/VI (Kelas 6)</option>
+                                <option value="SMP/VII">SMP/VII (Kelas 7)</option>
+                                <option value="SMP/VIII">SMP/VIII (Kelas 8)</option>
+                                <option value="SMP/IX">SMP/IX (Kelas 9)</option>
+                                <option value="SMA/X">SMA/X (Kelas 10)</option>
+                                <option value="SMA/XI">SMA/XI (Kelas 11)</option>
+                                <option value="SMA/XII">SMA/XII (Kelas 12)</option>
+                                <option value="SMK/X">SMK/X (Kelas 10)</option>
+                                <option value="SMK/XI">SMK/XI (Kelas 11)</option>
+                                <option value="SMK/XII">SMK/XII (Kelas 12)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Fase Kurikulum Merdeka (Otomatis) <span class="text-rose-600">*</span></label>
+                            <div class="relative">
+                                <input type="text" id="fase" readonly
+                                    class="w-full px-3 py-2 pr-9 text-sm font-semibold text-kemdikbud-900 bg-blue-50/80 border border-blue-200 rounded-xl outline-none cursor-not-allowed select-none">
+                                <i data-lucide="lock" class="w-3.5 h-3.5 text-kemdikbud-700 absolute right-3 top-1/2 -translate-y-1/2"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Nama Sekolah <span class="text-rose-600">*</span></label>
+                        <input type="text" id="namaSekolah" oninput="updatePreview()" placeholder="Contoh: SDN 01 Nusantara"
+                            class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Mata Pelajaran <span class="text-rose-600">*</span></label>
+                        <select id="mapelSelect" onchange="handleMapelChange()"
+                            class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+                        </select>
+                        <div id="mapelCustomWrapper" class="hidden mt-2">
+                            <input type="text" id="mapelCustom" oninput="updatePreview()" placeholder="Ketikkan nama mata pelajaran manual..."
+                                class="w-full px-3 py-2 text-sm bg-white border border-blue-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1">Topik / Materi Pokok <span class="text-rose-600">*</span></label>
+                        <input type="text" id="topik" oninput="handleTpOrTopikInput()" placeholder="Contoh: PETA KONVENSIONAL DAN DIGITAL"
+                            class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+                    </div>
+
+                    <!-- Tujuan Pembelajaran ditempatkan di bawah Topik/Materi Pokok pada form -->
+                    <div class="p-3.5 bg-amber-50/60 rounded-xl border border-amber-200/80">
+                        <label class="block text-xs font-bold text-slate-800 mb-1">Tujuan Pembelajaran - Hasil Analisis CP <span class="text-rose-600">*</span></label>
+                        <p class="text-[11px] text-slate-500 mb-1.5">Tuliskan PERSIS tujuan pembelajaran hasil analisis CP (AI wajib menggunakan apa adanya tanpa mengubah/menambah).</p>
+                        <textarea id="tujuanPembelajaran" rows="2" oninput="handleTpOrTopikInput()" placeholder="Tuliskan tujuan pembelajaran hasil analisis CP..."
+                            class="w-full px-3 py-2 text-sm bg-white border border-amber-300/90 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition"></textarea>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Jumlah Peserta Didik <span class="text-rose-600">*</span></label>
+                            <input type="text" id="jumlahSiswa" oninput="updatePreview()" placeholder="Contoh: 32"
+                                class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Alokasi Waktu <span class="text-rose-600">*</span></label>
+                            <input type="text" id="alokasiWaktu" oninput="updatePreview()" placeholder="Contoh: 2 JP / 2 x 30 MENIT"
+                                class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+                            <p class="text-[11px] text-slate-500 mt-1.5 leading-relaxed">contoh: 2 JP / 2 x 45 Menit</p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div class="flex flex-wrap items-center justify-between gap-2 mb-1">
+                            <div class="flex items-center gap-1.5">
+                                <label class="block text-xs font-semibold text-slate-700">Kondisi Kelas <span class="text-rose-600">*</span></label>
+                                <span id="kondisiStatusBadge" class="text-[10px] font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded-md">Otomatis</span>
+                            </div>
+                            <div class="flex flex-wrap items-center gap-1.5">
+                                <label class="inline-flex items-center gap-1.5 px-2 py-0.5 bg-white border border-slate-300 rounded-md cursor-pointer hover:border-blue-500 transition select-none" title="Otomatis perbarui kondisi kelas saat Jenjang, Topik, atau TP diubah">
+                                    <input type="checkbox" id="autoSyncKondisi" checked onchange="handleAutoSyncKondisiToggle()" class="w-3 h-3 text-blue-600 rounded focus:ring-blue-500">
+                                    <span class="text-[10px] font-medium text-slate-700">Auto-Sync</span>
+                                </label>
+                                <button type="button" onclick="syncKondisiKelas(false)"
+                                    class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-semibold bg-kemdikbud-700 hover:bg-kemdikbud-800 text-white shadow-2xs transition cursor-pointer"
+                                    title="Susun ulang kondisi kelas secara otomatis sesuai jenjang, topik, dan TP">
+                                    <i data-lucide="wand-2" class="w-2.5 h-2.5"></i>
+                                    <span>Buat Otomatis</span>
+                                </button>
+                            </div>
+                        </div>
+                        <textarea id="kondisiKelas" rows="3" oninput="handleKondisiManualInput()" placeholder="Gambarkan karakteristik, keaktifan, dan kebutuhan belajar siswa..."
+                            class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 2: INPUT GURU - KEPUTUSAN PROFESIONAL -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
+                <div class="bg-kemdikbud-800 text-white px-4 py-3 flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <span class="w-6 h-6 rounded-lg bg-amber-400 text-slate-900 text-xs font-bold flex items-center justify-center">2</span>
+                        <h2 class="font-semibold text-sm tracking-wide">INPUT GURU - KEPUTUSAN PROFESIONAL</h2>
+                    </div>
+                    <span class="text-[11px] text-blue-200">Wajib Diisi</span>
+                </div>
+                <div class="p-4 sm:p-5 space-y-5">
+                    
+                    <!-- 2.1 Masalah Utama -->
+                    <div>
+                        <div class="flex flex-wrap items-center justify-between gap-2 mb-1">
+                            <div class="flex items-center gap-1.5">
+                                <label class="block text-xs font-bold text-slate-800">1. Masalah Utama Pembelajaran <span class="text-rose-600">*</span></label>
+                                <span id="masalahStatusBadge" class="text-[10px] font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded-md">Selaras TP</span>
+                            </div>
+                            <div class="flex flex-wrap items-center gap-1.5">
+                                <label class="inline-flex items-center gap-1.5 px-2 py-0.5 bg-white border border-slate-300 rounded-md cursor-pointer hover:border-blue-500 transition select-none" title="Otomatis perbarui masalah utama saat Topik atau TP diubah">
+                                    <input type="checkbox" id="autoSyncMasalah" checked onchange="handleAutoSyncMasalahToggle()" class="w-3 h-3 text-blue-600 rounded focus:ring-blue-500">
+                                    <span class="text-[10px] font-medium text-slate-700">Auto-Sync TP</span>
+                                </label>
+                                <button type="button" onclick="syncMasalahUtama(false)"
+                                    class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-semibold bg-kemdikbud-700 hover:bg-kemdikbud-800 text-white shadow-2xs transition cursor-pointer"
+                                    title="Susun ulang rumusan masalah utama berdasarkan Topik dan Tujuan Pembelajaran">
+                                    <i data-lucide="wand-2" class="w-2.5 h-2.5"></i>
+                                    <span>Sesuaikan dengan TP</span>
+                                </button>
+                            </div>
+                        </div>
+                        <p class="text-[11px] text-slate-500 mb-1.5">Masalah nyata di kelas yang menjadi titik berangkat dan benang merah seluruh perencanaan.</p>
+                        <textarea id="masalahUtama" rows="2" oninput="handleMasalahManualInput()" placeholder="Tuliskan masalah utama yang dialami peserta didik..."
+                            class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"></textarea>
+                    </div>
+
+                    <!-- 2.3 Model Pembelajaran & Sintak -->
+                    <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-800 mb-1.5">3. Model Pembelajaran yang Dipilih <span class="text-rose-600">*</span></label>
+                            <input type="text" id="modelPembelajaran" oninput="updatePreview()" placeholder="Contoh: Discovery Learning"
+                                class="w-full px-3 py-2 text-sm bg-white border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+                            
+                            <!-- Preset Buttons -->
+                            <div class="flex flex-wrap gap-1.5 mt-2">
+                                <span class="text-[11px] text-slate-500 self-center mr-1">Preset cepat:</span>
+                                <button type="button" onclick="applyModelPreset('Discovery Learning')" class="px-2.5 py-1 text-[11px] font-medium bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 border border-slate-300 rounded-lg transition cursor-pointer">Discovery Learning</button>
+                                <button type="button" onclick="applyModelPreset('Problem-Based Learning')" class="px-2.5 py-1 text-[11px] font-medium bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 border border-slate-300 rounded-lg transition cursor-pointer">Problem-Based Learning</button>
+                                <button type="button" onclick="applyModelPreset('Project-Based Learning')" class="px-2.5 py-1 text-[11px] font-medium bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 border border-slate-300 rounded-lg transition cursor-pointer">Project-Based Learning</button>
+                                <button type="button" onclick="applyModelPreset('Inquiry Learning')" class="px-2.5 py-1 text-[11px] font-medium bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 border border-slate-300 rounded-lg transition cursor-pointer">Inquiry Learning</button>
+                                <button type="button" onclick="applyModelPreset('Cooperative Learning')" class="px-2.5 py-1 text-[11px] font-medium bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 border border-slate-300 rounded-lg transition cursor-pointer">Cooperative Learning</button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Sintak Model Pembelajaran <span class="text-rose-600">*</span></label>
+                            <textarea id="sintakModel" rows="2" oninput="updatePreview()" placeholder="Tuliskan urutan sintak model pembelajaran..."
+                                class="w-full px-3 py-2 text-sm bg-white border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- 2.4 Fitur PID yang Akan Digunakan -->
+                    <div class="p-3.5 bg-slate-50/70 rounded-xl border border-slate-200 space-y-3">
+                        <div class="flex flex-wrap items-start justify-between gap-2">
+                            <div>
+                                <label class="block text-xs font-bold text-slate-800">4. Fitur PID (Papan Interaktif Digital) yang Akan Digunakan <span class="text-rose-600">*</span></label>
+                                <p class="text-[11px] text-slate-500 mt-0.5">Wajib memilih minimal 1 fitur PID beserta tujuan penggunaannya.</p>
+                            </div>
+                            <div class="flex flex-wrap items-center gap-2">
+                                <label class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-white border border-slate-300 rounded-lg cursor-pointer hover:border-blue-500 transition select-none" title="Otomatis perbarui tujuan PID saat TP atau Topik diubah (kecuali yang sudah diedit manual)">
+                                    <input type="checkbox" id="autoSyncPid" checked onchange="handleAutoSyncToggle()" class="w-3.5 h-3.5 text-blue-600 rounded focus:ring-blue-500">
+                                    <span class="text-[11px] font-medium text-slate-700">Auto-Sync TP</span>
+                                </label>
+                                <button type="button" onclick="regenerateAllPidPurposes()"
+                                    class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-kemdikbud-700 hover:bg-kemdikbud-800 text-white shadow-xs transition cursor-pointer"
+                                    title="Generate ulang seluruh tujuan fitur PID berdasarkan TP saat ini">
+                                    <i data-lucide="wand-2" class="w-3 h-3"></i>
+                                    <span>Sesuaikan Semua dengan TP</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div id="pid-container" class="space-y-2.5">
+                            <!-- Rendered dynamically via JS -->
+                        </div>
+                    </div>
+
+                    <!-- 2.5 Konten Rumah Pendidikan -->
+                    <div class="p-3.5 bg-blue-50/50 rounded-xl border border-blue-200/80 space-y-3.5">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-800 mb-1">5. Konten Rumah Pendidikan yang Dipilih <span class="text-rose-600">*</span></label>
+                            <p class="text-[11px] text-slate-500 mb-2">Wajib memilih minimal 1 ruang pada ekosistem Rumah Pendidikan Kemendikdasmen:</p>
+                            <div class="flex flex-wrap gap-3">
+                                <label class="inline-flex items-center gap-2 px-3 py-1.5 bg-white border border-slate-300 rounded-lg cursor-pointer hover:border-blue-500 transition">
+                                    <input type="checkbox" id="ruangMurid" onchange="handleRumahPendidikanContextChange()" class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500">
+                                    <span class="text-xs font-medium text-slate-700">Ruang Murid</span>
+                                </label>
+                                <label class="inline-flex items-center gap-2 px-3 py-1.5 bg-white border border-slate-300 rounded-lg cursor-pointer hover:border-blue-500 transition">
+                                    <input type="checkbox" id="ruangGTK" onchange="handleRumahPendidikanContextChange()" class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500">
+                                    <span class="text-xs font-medium text-slate-700">Ruang GTK</span>
+                                </label>
+                                <label class="inline-flex items-center gap-2 px-3 py-1.5 bg-white border border-slate-300 rounded-lg cursor-pointer hover:border-blue-500 transition">
+                                    <input type="checkbox" id="ruangBahasa" onchange="handleRumahPendidikanContextChange()" class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500">
+                                    <span class="text-xs font-medium text-slate-700">Ruang Bahasa</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1">Jenis Konten / Fitur yang Dipilih <span class="text-rose-600">*</span></label>
+                            <p class="text-[11px] text-slate-500 mb-2">Klik pilihan rekomendasi yang disusun otomatis berdasarkan Topik, TP, dan Ruang terpilih, atau edit langsung pada kolom di bawah.</p>
+                            <div id="jenisKontenSuggestions" class="flex flex-wrap gap-1.5 mb-2">
+                                <!-- Dirender otomatis sesuai Topik, TP, dan Ruang -->
+                            </div>
+                            <textarea id="jenisKonten" rows="2" oninput="handleRumahPendidikanContextChange()" placeholder="Contoh: - Buku digital - Video pembelajaran - Bank soal latihan"
+                                class="w-full px-3 py-2 text-sm bg-white border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"></textarea>
+                        </div>
+
+                        <div>
+                            <div class="flex flex-wrap items-center justify-between gap-2 mb-1.5">
+                                <div class="flex items-center gap-1.5">
+                                    <label class="block text-xs font-semibold text-slate-700">Rencana Penggunaan di Kelas <span class="text-rose-600">*</span></label>
+                                    <span id="rencanaStatusBadge" class="text-[10px] font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded-md">Selaras TP</span>
+                                </div>
+                                <div class="flex flex-wrap items-center gap-1.5">
+                                    <label class="inline-flex items-center gap-1.5 px-2 py-0.5 bg-white border border-slate-300 rounded-md cursor-pointer hover:border-blue-500 transition select-none" title="Otomatis perbarui rencana penggunaan saat TP, Topik, Ruang, atau Jenis Konten diubah">
+                                        <input type="checkbox" id="autoSyncRencana" checked onchange="handleAutoSyncRencanaToggle()" class="w-3 h-3 text-blue-600 rounded focus:ring-blue-500">
+                                        <span class="text-[10px] font-medium text-slate-700">Auto-Sync TP</span>
+                                    </label>
+                                    <button type="button" onclick="syncRencanaPenggunaan(false)"
+                                        class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-semibold bg-kemdikbud-700 hover:bg-kemdikbud-800 text-white shadow-2xs transition cursor-pointer"
+                                        title="Susun ulang rencana penggunaan di kelas mengikuti Tujuan Pembelajaran saat ini">
+                                        <i data-lucide="wand-2" class="w-2.5 h-2.5"></i>
+                                        <span>Sesuaikan dengan TP</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <textarea id="rencanaPenggunaan" rows="4" oninput="handleRencanaManualInput()" placeholder="Jelaskan alur pemanfaatan konten Rumah Pendidikan dari awal hingga akhir..."
+                                class="w-full px-3 py-2 text-sm bg-white border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 3: PENGATURAN PENGALAMAN BELAJAR -->
+            <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
+                <div class="bg-slate-800 text-white px-4 py-3 flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <span class="w-6 h-6 rounded-lg bg-emerald-500 text-white text-xs font-bold flex items-center justify-center">3</span>
+                        <h2 class="font-semibold text-sm tracking-wide">PENGATURAN PENGALAMAN BELAJAR</h2>
+                    </div>
+                    <span class="text-[11px] text-slate-300">Bagian Tugas Anda</span>
+                </div>
+                <div class="p-4 sm:p-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1.5">Jumlah Pertemuan <span class="text-rose-600">*</span></label>
+                        <input type="text" id="jumlahPertemuan" oninput="updatePreview()" placeholder="Contoh: 1 Pertemuan"
+                            class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-700 mb-1.5">Durasi Kegiatan Inti (Menit) <span class="text-rose-600">*</span></label>
+                        <input type="text" id="durasiInti" oninput="updatePreview()" placeholder="Contoh: 70"
+                            class="w-full px-3 py-2 text-sm bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition">
+                        <p class="text-[11px] text-slate-500 mt-1.5 leading-relaxed">Untuk durasi kegiatan hitung berdasarkan pengurangan dari kegiatan pendahuluan dan penutup (45 x 2 = 90 Menit - 10 Menit Pendahuluan - 10 Menit Penutup = 70 menit)</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Padding for mobile scrolling -->
+            <div class="h-6"></div>
+        </section>
+
+        <!-- RIGHT PANEL: Live Preview & Actions -->
+        <section id="panel-preview" class="hidden lg:flex flex-col w-full lg:w-[52%] xl:w-[55%] lg:h-full bg-slate-100">
+            
+            <!-- Preview Toolbar -->
+            <div class="bg-white border-b border-slate-200 px-4 sm:px-6 py-3 flex flex-wrap items-center justify-between gap-2.5 shrink-0">
+                <div class="flex flex-wrap items-center gap-2">
+                    <span class="inline-flex items-center gap-1.5 text-xs font-bold text-slate-800">
+                        <i data-lucide="file-check-2" class="w-4 h-4 text-kemdikbud-600"></i>
+                        PRATINJAU PROMPT AI
+                    </span>
+                    <span id="mandatory-status-badge" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                        Wajib diisi lengkap
+                    </span>
+                    <span class="hidden sm:inline-block text-[11px] text-slate-400">|</span>
+                    <!-- Toggle Red Highlight -->
+                    <label class="inline-flex items-center gap-1.5 cursor-pointer select-none bg-slate-100 hover:bg-slate-200/70 px-2.5 py-1 rounded-lg transition">
+                        <input type="checkbox" id="toggleHighlight" checked onchange="toggleRedHighlight()" class="w-3.5 h-3.5 text-red-600 rounded focus:ring-red-500">
+                        <span class="text-[11px] font-medium text-slate-700">Tandai Isian Merah</span>
+                    </label>
+                </div>
+
+                <!-- Export / Copy Buttons -->
+                <div class="flex items-center gap-2">
+                    <button type="button" onclick="copyPrompt()" id="btn-copy"
+                        class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold bg-kemdikbud-700 hover:bg-kemdikbud-800 text-white shadow-sm transition cursor-pointer">
+                        <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                        <span>Salin Prompt</span>
+                    </button>
+                    <button type="button" onclick="downloadFile('txt')"
+                        class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 shadow-sm transition cursor-pointer" title="Unduh sebagai file Teks (.txt)">
+                        <i data-lucide="file-text" class="w-3.5 h-3.5 text-slate-500"></i>
+                        <span>.txt</span>
+                    </button>
+                    <button type="button" onclick="downloadFile('doc')"
+                        class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-medium bg-blue-50 hover:bg-blue-100 text-kemdikbud-800 border border-blue-200 shadow-sm transition cursor-pointer" title="Unduh sebagai dokumen Word (.doc)">
+                        <i data-lucide="download" class="w-3.5 h-3.5 text-kemdikbud-600"></i>
+                        <span>.doc</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Document Paper Preview Area -->
+            <div class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
+                <div id="document-paper" class="max-w-4xl mx-auto bg-white rounded-2xl shadow-sm border border-slate-200/90 p-5 sm:p-8 lg:p-10">
+                    <pre id="prompt-preview" class="whitespace-pre-wrap font-mono text-[12.5px] sm:text-[13px] leading-relaxed text-slate-800 break-words"></pre>
+                </div>
+                <footer class="max-w-4xl mx-auto mt-4 pt-3 border-t border-slate-200/80 text-center">
+                    <p class="text-xs text-slate-500">Developer</p>
+                    <p class="text-base sm:text-lg font-extrabold tracking-wider text-kemdikbud-800">Z. ASMARADY</p>
+                </footer>
+                <div class="h-8"></div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Custom Toast Notification (No alert() used) -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+        <div class="bg-slate-900 text-white px-4 py-3 rounded-xl shadow-lg flex items-center gap-2.5 text-xs font-medium border border-slate-700">
+            <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+            <span id="toast-message">Prompt berhasil disalin ke clipboard!</span>
+        </div>
+    </div>
+
+    <script>
+        // Konfigurasi Mapping Jenjang/Kelas -> Fase Otomatis & Kategori Jenjang
+        const JENJANG_CONFIG = {
+            "PAUD (TK A)": { fase: "Fase Fondasi", level: "PAUD" },
+            "PAUD (TK B)": { fase: "Fase Fondasi", level: "PAUD" },
+            "SD/I":        { fase: "Fase A", level: "SD" },
+            "SD/II":       { fase: "Fase A", level: "SD" },
+            "SD/III":      { fase: "Fase B", level: "SD" },
+            "SD/IV":       { fase: "Fase B", level: "SD" },
+            "SD/V":        { fase: "Fase C", level: "SD" },
+            "SD/VI":       { fase: "Fase C", level: "SD" },
+            "SMP/VII":     { fase: "Fase D", level: "SMP" },
+            "SMP/VIII":    { fase: "Fase D", level: "SMP" },
+            "SMP/IX":      { fase: "Fase D", level: "SMP" },
+            "SMA/X":       { fase: "Fase E", level: "SMA" },
+            "SMA/XI":      { fase: "Fase F", level: "SMA" },
+            "SMA/XII":     { fase: "Fase F", level: "SMA" },
+            "SMK/X":       { fase: "Fase E", level: "SMK" },
+            "SMK/XI":      { fase: "Fase F", level: "SMK" },
+            "SMK/XII":     { fase: "Fase F", level: "SMK" }
+        };
+
+        // Daftar Mata Pelajaran Lengkap per Jenjang
+        const MAPEL_BY_LEVEL = {
+            PAUD: [
+                "Pengembangan Nilai Agama & Moral",
+                "Fisik Motorik",
+                "Kognitif",
+                "Bahasa",
+                "Sosial Emosional",
+                "Seni",
+                "Proyek Penguatan Profil Pelajar Pancasila (P5)"
+            ],
+            SD: [
+                "IPAS",
+                "IPAS (Ilmu Pengetahuan Alam dan Sosial)",
+                "Pendidikan Agama dan Budi Pekerti",
+                "Pendidikan Pancasila",
+                "Bahasa Indonesia",
+                "Matematika",
+                "PJOK (Pendidikan Jasmani, Olahraga, dan Kesehatan)",
+                "Seni Musik",
+                "Seni Rupa",
+                "Seni Tari",
+                "Seni Teater",
+                "Bahasa Inggris",
+                "Koding dan Kecerdasan Artifisial (KKA)",
+                "Muatan Lokal / Bahasa Daerah"
+            ],
+            SMP: [
+                "Pendidikan Agama dan Budi Pekerti",
+                "Pendidikan Pancasila",
+                "Bahasa Indonesia",
+                "Matematika",
+                "IPA (Ilmu Pengetahuan Alam)",
+                "IPS (Ilmu Pengetahuan Sosial)",
+                "Bahasa Inggris",
+                "PJOK (Pendidikan Jasmani, Olahraga, dan Kesehatan)",
+                "Informatika",
+                "Seni Musik",
+                "Seni Rupa",
+                "Seni Tari",
+                "Seni Teater",
+                "Prakarya",
+                "Koding dan Kecerdasan Artifisial (KKA)",
+                "Muatan Lokal / Bahasa Daerah"
+            ],
+            SMA: [
+                "Pendidikan Agama dan Budi Pekerti",
+                "Pendidikan Pancasila",
+                "Bahasa Indonesia",
+                "Matematika",
+                "Matematika Tingkat Lanjut",
+                "Bahasa Inggris",
+                "Bahasa Inggris Tingkat Lanjut",
+                "Fisika",
+                "Kimia",
+                "Biologi",
+                "Sosiologi",
+                "Ekonomi",
+                "Geografi",
+                "Sejarah",
+                "Antropologi",
+                "Informatika",
+                "PJOK",
+                "Seni Musik",
+                "Seni Rupa",
+                "Seni Tari",
+                "Seni Teater",
+                "Prakarya dan Kewirausahaan",
+                "Bahasa Asing (Jepang/Jerman/Prancis/Mandarin/Arab/Korea)",
+                "Koding dan Kecerdasan Artifisial (KKA)",
+                "Muatan Lokal"
+            ],
+            SMK: [
+                "Dasar-Dasar Program Keahlian",
+                "Konsentrasi Keahlian",
+                "Projek IPAS",
+                "Projek Kreatif dan Kewirausahaan (PKK)",
+                "Mata Pelajaran Pilihan",
+                "Pendidikan Agama dan Budi Pekerti",
+                "Pendidikan Pancasila",
+                "Bahasa Indonesia",
+                "Matematika",
+                "Matematika Tingkat Lanjut",
+                "Bahasa Inggris",
+                "Bahasa Inggris Tingkat Lanjut",
+                "Fisika",
+                "Kimia",
+                "Biologi",
+                "Sosiologi",
+                "Ekonomi",
+                "Geografi",
+                "Sejarah",
+                "Antropologi",
+                "Informatika",
+                "PJOK",
+                "Seni Musik",
+                "Seni Rupa",
+                "Seni Tari",
+                "Seni Teater",
+                "Prakarya dan Kewirausahaan",
+                "Bahasa Asing (Jepang/Jerman/Prancis/Mandarin/Arab/Korea)",
+                "Koding dan Kecerdasan Artifisial (KKA)",
+                "Muatan Lokal"
+            ]
+        };
+
+        const CUSTOM_MAPEL_VALUE = "__CUSTOM__";
+
+        // Daftar kode akses yang diizinkan (bisa ditambah atau diganti sesuai kebutuhan)
+        const VALID_ACCESS_CODES = new Set([
+            "RPM-2026",
+            "GURU-HEBAT",
+            "ASMARADY-VIP"
+        ]);
+
+        let isAccessGranted = false;
+
+        // Mengunci atau membuka seluruh kontrol isian menu & aksi di luar input kode akses
+        function applyWorkspaceLockState() {
+            const workspace = document.getElementById('main-workspace');
+            const activeBadge = document.getElementById('access-active-badge');
+            const accessForm = document.getElementById('inline-access-form');
+
+            if (workspace) {
+                if (!isAccessGranted) {
+                    workspace.classList.add('opacity-55', 'select-none');
+                } else {
+                    workspace.classList.remove('opacity-55', 'select-none');
+                }
+
+                // Nonaktifkan/aktifkan semua elemen interaktif di dalam workspace
+                const interactiveEls = workspace.querySelectorAll('input, select, textarea, button');
+                interactiveEls.forEach(el => {
+                    el.disabled = !isAccessGranted;
+                    if (!isAccessGranted) {
+                        el.classList.add('pointer-events-none', 'cursor-not-allowed');
+                    } else {
+                        el.classList.remove('pointer-events-none', 'cursor-not-allowed');
+                    }
+                });
+            }
+
+            // Kunci juga tombol header selain form aktivasi kode akses
+            const headerActionButtons = document.querySelectorAll('header button:not(#btn-unlock-access):not(#access-active-badge button)');
+            headerActionButtons.forEach(btn => {
+                btn.disabled = !isAccessGranted;
+                if (!isAccessGranted) {
+                    btn.classList.add('opacity-50', 'pointer-events-none', 'cursor-not-allowed');
+                } else {
+                    btn.classList.remove('opacity-50', 'pointer-events-none', 'cursor-not-allowed');
+                }
+            });
+
+            if (activeBadge && accessForm) {
+                if (isAccessGranted) {
+                    activeBadge.classList.remove('hidden');
+                    activeBadge.classList.add('inline-flex');
+                    accessForm.classList.add('hidden');
+                } else {
+                    activeBadge.classList.add('hidden');
+                    activeBadge.classList.remove('inline-flex');
+                    accessForm.classList.remove('hidden');
+                }
+            }
+        }
+
+        function checkAccessState() {
+            applyWorkspaceLockState();
+        }
+
+        function handleAccessSubmit(event) {
+            event.preventDefault();
+            const input = document.getElementById('access-code-input');
+            const errorMsg = document.getElementById('access-error-msg');
+            if (!input) return;
+
+            const normalizedCode = input.value.trim().toUpperCase();
+            if (VALID_ACCESS_CODES.has(normalizedCode)) {
+                isAccessGranted = true;
+                if (errorMsg) errorMsg.classList.add('hidden');
+                checkAccessState();
+                showToast("Kode akses valid! Semua menu kini dapat diklik dan digunakan.");
+            } else {
+                if (errorMsg) errorMsg.classList.remove('hidden');
+                input.focus();
+                showToast("Kode akses tidak valid. Silakan periksa kembali.");
+            }
+        }
+
+        function lockAccess() {
+            isAccessGranted = false;
+            const input = document.getElementById('access-code-input');
+            const errorMsg = document.getElementById('access-error-msg');
+            if (input) input.value = "";
+            if (errorMsg) errorMsg.classList.add('hidden');
+            checkAccessState();
+            showToast("Menu dikunci. Masukkan kode akses untuk mengklik isian menu.");
+        }
+
+        // Default Data matching the exact uploaded document 'PROMPT AI UNTUK RPP (1).docx'
+        const DEFAULT_DATA = {
+            jenjang: "SD/III",
+            namaSekolah: "SDN 01 Nusantara",
+            mapel: "IPAS",
+            topik: "PETA KONVENSIONAL DAN DIGITAL",
+            fase: "Fase B",
+            jumlahSiswa: "32",
+            kondisiKelas: "Siswa cukup aktif dengan kemampuan yang beragam, tetapi masih kesulitan memahami letak pada peta. Pembelajaran perlu menggunakan media visual dan aktivitas langsung agar lebih mudah dipahami",
+            alokasiWaktu: "2 JP / 2 x 30 MENIT",
+            masalahUtama: "Siswa belum mampu mengaitkan peta dengan pengalaman nyata (tempat tinggal mereka)",
+            tujuanPembelajaran: "Menjelaskan letak tempat tinggal kota/kabupaten dan provinsi melalui peta konvensional/digital",
+            modelPembelajaran: "Discovery Learning",
+            sintakModel: "Stimulation Problem Statement Data Collection Data Processing Verification Generalization",
+            pidFeatures: [
+                {
+                    id: "pid_1",
+                    label: "Layar Sentuh Multi-Touch",
+                    checked: true,
+                    manualEdited: false,
+                    purpose: ""
+                },
+                {
+                    id: "pid_2",
+                    label: "Anotasi dan Menulis Digital",
+                    checked: true,
+                    manualEdited: false,
+                    purpose: ""
+                },
+                {
+                    id: "pid_3",
+                    label: "Integrasi Multimedia (video/simulasi)",
+                    checked: true,
+                    manualEdited: false,
+                    purpose: ""
+                },
+                {
+                    id: "pid_4",
+                    label: "Berbagi Layar Nirkabel",
+                    checked: false,
+                    manualEdited: false,
+                    purpose: ""
+                },
+                {
+                    id: "pid_5",
+                    label: "Penyimpanan dan Berbagi Dokumen",
+                    checked: true,
+                    manualEdited: false,
+                    purpose: ""
+                },
+                {
+                    id: "pid_6",
+                    label: "Akses Internet dan Aplikasi langsung di PID",
+                    checked: true,
+                    manualEdited: false,
+                    purpose: ""
+                }
+            ],
+            ruangMurid: true,
+            ruangGTK: false,
+            ruangBahasa: false,
+            jenisKonten: "- Buku digital dan materi pembelajaran IPAS tentang Peta - Video pembelajaran konsep Peta - Bank soal latihan konsep Peta",
+            rencanaPenggunaan: "Rencana penggunaan konten di kelas dimulai dengan memanfaatkan buku digital sebagai pengantar untuk mengenalkan konsep dasar peta konvensional dan digital, sehingga siswa memiliki pemahaman awal yang sama. Selanjutnya, siswa menonton video pembelajaran yang menampilkan cara membaca peta dan menentukan letak suatu tempat, agar konsep yang bersifat abstrak menjadi lebih konkret dan mudah dipahami. Pada kegiatan inti, siswa menggunakan kembali buku digital dan peta yang tersedia untuk mengeksplorasi letak tempat tinggal mereka, mulai dari kota/kabupaten hingga provinsi, sehingga terjadi proses penemuan secara mandiri. Kegiatan kemudian dilanjutkan dengan diskusi berpasangan atau kelompok kecil agar siswa dapat saling bertukar informasi dan memperkuat pemahaman mereka tentang letak wilayah. Sebagai penutup, siswa mengerjakan latihan pada bank soal untuk menguji pemahaman, sekaligus memberikan kesempatan bagi guru untuk memberikan umpan balik dan penguatan terhadap konsep yang telah dipelajari",
+            jumlahPertemuan: "1 Pertemuan",
+            durasiInti: "45"
+        };
+
+        const MODEL_PRESETS = {
+            "Discovery Learning": "Stimulation (Pemberian Rangsangan) - Problem Statement (Identifikasi Masalah) - Data Collection (Pengumpulan Data) - Data Processing (Pengolahan Data) - Verification (Pembuktian) - Generalization (Menarik Kesimpulan)",
+            "Problem-Based Learning": "Sintak 1: Orientasi peserta didik pada masalah | Sintak 2: Mengorganisasikan peserta didik untuk belajar | Sintak 3: Membimbing penyelidikan individual/kelompok | Sintak 4: Mengembangkan dan menyajikan hasil karya | Sintak 5: Menganalisis dan mengevaluasi proses pemecahan masalah",
+            "Project-Based Learning": "Sintak 1: Pertanyaan Mendasar | Sintak 2: Mendesain Perencanaan Produk | Sintak 3: Menyusun Jadwal Pembuatan | Sintak 4: Memonitor Keaktifan dan Perkembangan Proyek | Sintak 5: Menguji Hasil | Sintak 6: Evaluasi Pengalaman Belajar",
+            "Inquiry Learning": "Sintak 1: Orientasi | Sintak 2: Merumuskan Masalah | Sintak 3: Merumuskan Hipotesis | Sintak 4: Mengumpulkan Data | Sintak 5: Menguji Hipotesis | Sintak 6: Merumuskan Kesimpulan",
+            "Cooperative Learning": "Sintak 1: Menyampaikan Tujuan dan Memotivasi Siswa | Sintak 2: Menyajikan Informasi | Sintak 3: Mengorganisasikan Siswa ke dalam Kelompok Belajar | Sintak 4: Membimbing Kelompok Bekerja dan Belajar | Sintak 5: Evaluasi | Sintak 6: Memberikan Penghargaan"
+        };
+
+        let pidState = JSON.parse(JSON.stringify(DEFAULT_DATA.pidFeatures));
+        let rencanaManualEdited = false;
+        let kondisiManualEdited = false;
+        let masalahManualEdited = false;
+
+        // Ubah teks ke Title Case rapi untuk nama topik pada kalimat
+        function toSmartTitleCase(str) {
+            if (!str) return "";
+            const minorWords = new Set(["dan", "atau", "di", "ke", "dari", "pada", "dalam", "untuk", "dengan", "yang", "serta", "tentang"]);
+            return str
+                .trim()
+                .split(/\s+/)
+                .map((word, index) => {
+                    // Pertahankan singkatan pendek kapital seperti IPAS, PPKn, PID, TIK
+                    if (word.length <= 4 && word === word.toUpperCase() && /^[A-Z0-9]+$/.test(word)) {
+                        return word;
+                    }
+                    const lower = word.toLowerCase();
+                    if (index > 0 && minorWords.has(lower)) {
+                        return lower;
+                    }
+                    return lower.charAt(0).toUpperCase() + lower.slice(1);
+                })
+                .join(" ");
+        }
+
+        // Ekstrak & rapikan inti tindakan/kompetensi dari input Tujuan Pembelajaran (TP)
+        function extractCoreTpPhrase(rawTp) {
+            if (!rawTp || !rawTp.trim()) return "";
+
+            // Pisahkan per baris jika guru menulis beberapa TP (TP-1, TP-2, dst.)
+            const lines = rawTp
+                .split(/\r?\n/)
+                .map(line => line.trim())
+                .filter(Boolean);
+
+            const cleanedItems = lines.map(line => {
+                let text = line;
+                // Hapus awalan penomoran seperti "TP-1:", "TP 1.", "1.", "a)", "-", "•"
+                text = text.replace(/^(?:tp\s*[-–—]?\s*\d+\s*[:.)-]|\d+\s*[.)-]|\(?[a-z]\)\s*|[•\-–—]\s*)/i, "").trim();
+                // Hapus frasa pembuka umum seperti "Peserta didik dapat/mampu", "Siswa dapat/mampu", "Murid dapat/mampu"
+                text = text.replace(/^(?:peserta\s+didik|siswa|murid)\s+(?:diharapkan\s+)?(?:dapat|mampu|bisa)\s+/i, "").trim();
+                // Hapus frasa "Tujuan pembelajaran:" jika terbawa
+                text = text.replace(/^tujuan\s+pembelajaran\s*[:.-]\s*/i, "").trim();
+                // Hapus tanda titik/koma di akhir kalimat
+                text = text.replace(/[.;,]+$/, "").trim();
+                // Jadikan huruf pertama kecil agar menyatu mulus di tengah kalimat
+                if (text.length > 1) {
+                    // Kecuali jika kata pertama adalah singkatan kapital (mis. MENGANALISIS tidak, tapi IPA/TIK ya)
+                    const firstWord = text.split(/\s+/)[0];
+                    if (!(firstWord.length <= 4 && firstWord === firstWord.toUpperCase() && /^[A-Z]+$/.test(firstWord))) {
+                        text = text.charAt(0).toLowerCase() + text.slice(1);
+                    }
+                }
+                return text;
+            }).filter(Boolean);
+
+            if (cleanedItems.length === 0) return "";
+            if (cleanedItems.length === 1) return cleanedItems[0];
+            if (cleanedItems.length === 2) return `${cleanedItems[0]} serta ${cleanedItems[1]}`;
+
+            const lastItem = cleanedItems[cleanedItems.length - 1];
+            const prevItems = cleanedItems.slice(0, -1).join(", ");
+            return `${prevItems}, serta ${lastItem}`;
+        }
+
+        // Susun kalimat tujuan penggunaan fitur PID yang natural, operasional, & selaras TP
+        function buildPidPurposeFromTp(pidId, rawTp, rawTopik) {
+            const coreTp = extractCoreTpPhrase(rawTp);
+            const topicClean = toSmartTitleCase(rawTopik);
+
+            const tpAction = coreTp || (topicClean ? `memahami konsep ${topicClean}` : "mencapai tujuan pembelajaran yang ditetapkan");
+            const topicPhrase = topicClean ? `terkait materi ${topicClean}` : "sesuai materi pembelajaran";
+
+            switch (pidId) {
+                case "pid_1": // Layar Sentuh Multi-Touch
+                    return `Siswa berinteraksi langsung menyentuh dan memanipulasi objek visual pada layar PID untuk mencapai tujuan ${tpAction} secara konkret. Interaksi sentuh ini meningkatkan keterlibatan aktif serta pemahaman visual-spasial peserta didik.`;
+                case "pid_2": // Anotasi dan Menulis Digital
+                    return `Guru dan siswa menandai, menggarisbawahi, serta menuliskan poin-poin penting secara langsung pada layar PID guna mendukung pencapaian tujuan ${tpAction}. Aktivitas anotasi membantu mengaitkan visualisasi materi dengan pemahaman konsep secara jelas.`;
+                case "pid_3": // Integrasi Multimedia (video/simulasi)
+                    return `Menampilkan tayangan video pembelajaran maupun simulasi interaktif ${topicPhrase} agar siswa lebih mudah ${tpAction}. Visual dinamis menjembatani konsep abstrak menjadi lebih nyata.`;
+                case "pid_4": // Berbagi Layar Nirkabel
+                    return `Menampilkan hasil diskusi kelompok dari perangkat siswa secara nirkabel ke layar PID untuk mempresentasikan dan mengonfirmasi kemampuan ${tpAction}.`;
+                case "pid_5": // Penyimpanan dan Berbagi Dokumen
+                    return `Menyimpan hasil anotasi, tangkapan layar simulasi, dan kesimpulan kelas terkait upaya ${tpAction}, lalu membagikannya kepada peserta didik sebagai bahan belajar lanjutan.`;
+                case "pid_6": // Akses Internet dan Aplikasi langsung di PID
+                    return `Mengakses sumber belajar digital, eksplorasi web interaktif, atau aplikasi pembelajaran langsung melalui PID untuk memperdalam kemampuan peserta didik dalam ${tpAction}.`;
+                default:
+                    return `Memanfaatkan fitur PID secara interaktif untuk mendukung peserta didik dalam ${tpAction}.`;
+            }
+        }
+
+        // Susun kalimat Rencana Penggunaan Konten Rumah Pendidikan secara otomatis berdasarkan TP
+        function buildRencanaPenggunaanFromTp() {
+            const rawTp = document.getElementById('tujuanPembelajaran')?.value || "";
+            const rawTopik = document.getElementById('topik')?.value || "";
+            const rawJenisKonten = document.getElementById('jenisKonten')?.value || "";
+
+            const coreTp = extractCoreTpPhrase(rawTp);
+            const topicClean = toSmartTitleCase(rawTopik);
+
+            const tpAction = coreTp || (topicClean ? `memahami konsep ${topicClean}` : "mencapai tujuan pembelajaran yang telah ditetapkan");
+            const topicPhrase = topicClean ? `pada materi ${topicClean}` : "sesuai materi pokok yang dipelajari";
+
+            // Daftar ruang yang dicentang
+            const selectedRuang = [];
+            if (document.getElementById('ruangMurid')?.checked) selectedRuang.push("Ruang Murid");
+            if (document.getElementById('ruangGTK')?.checked) selectedRuang.push("Ruang GTK");
+            if (document.getElementById('ruangBahasa')?.checked) selectedRuang.push("Ruang Bahasa");
+
+            const ruangPhrase = selectedRuang.length > 0
+                ? `pada ${selectedRuang.join(", ")} Rumah Pendidikan`
+                : "pada ekosistem Rumah Pendidikan";
+
+            // Ekstrak butir jenis konten jika diisi
+            const kontenItems = rawJenisKonten
+                .split(/\r?\n|\s+-\s+/)
+                .map(s => s.replace(/^[-•*]\s*/, "").trim())
+                .filter(Boolean);
+
+            const kontenIntro = kontenItems.length > 0
+                ? `memanfaatkan konten pilihan (${kontenItems.join(", ")}) ${ruangPhrase}`
+                : `memanfaatkan bahan ajar digital ${ruangPhrase}`;
+
+            return `Rencana penggunaan konten di kelas dimulai dengan ${kontenIntro} sebagai pengantar ${topicPhrase}, sehingga peserta didik memiliki pemahaman awal yang selaras untuk ${tpAction}. Selanjutnya, peserta didik menyimak tayangan multimedia atau bahan bacaan interaktif agar konsep yang bersifat abstrak menjadi lebih konkret dan mudah dipahami. Pada kegiatan inti, peserta didik mengeksplorasi sumber belajar digital yang tersedia untuk menggali informasi, berdiskusi dalam pasangan atau kelompok kecil, serta melatih kemampuan dalam ${tpAction} secara mandiri maupun kolaboratif. Sebagai penutup, peserta didik mengerjakan latihan atau asesmen formatif yang tersedia untuk mengukur ketercapaian tujuan pembelajaran, sekaligus memberi ruang bagi guru memberikan umpan balik dan penguatan konsep.`;
+        }
+
+        // Susun kalimat Kondisi Kelas secara otomatis menyesuaikan Jenjang, Mapel, Topik, dan TP
+        function buildKondisiKelasAuto() {
+            const jenjangVal = document.getElementById('jenjang')?.value || "SD/III";
+            const config = JENJANG_CONFIG[jenjangVal] || { fase: "Fase B", level: "SD" };
+            const rawTopik = document.getElementById('topik')?.value || "";
+            const rawTp = document.getElementById('tujuanPembelajaran')?.value || "";
+            const mapelVal = getSelectedMapel();
+
+            const topicClean = toSmartTitleCase(rawTopik);
+            const coreTp = extractCoreTpPhrase(rawTp);
+
+            const focusPhrase = coreTp
+                ? `memahami dan menguasai keterampilan ${coreTp}`
+                : (topicClean ? `memahami konsep ${topicClean}` : `menguasai materi ${mapelVal || "pembelajaran"} secara mendalam`);
+
+            if (config.level === "PAUD") {
+                return `Anak-anak memiliki rasa ingin tahu tinggi dan sangat antusias pada aktivitas bermain sambil belajar, namun rentang konsentrasi masih singkat dan kemampuan motorik serta bahasa beragam. Kegiatan perlu menggunakan media visual konkret dan interaksi langsung untuk membantu anak ${focusPhrase}.`;
+            }
+            if (config.level === "SD") {
+                return `Siswa cukup aktif dengan gaya belajar dan kemampuan awal yang beragam, tetapi masih kesulitan ${focusPhrase} secara mandiri. Pembelajaran perlu menggunakan media visual interaktif serta aktivitas praktik langsung agar konsep lebih konkret dan mudah dipahami.`;
+            }
+            if (config.level === "SMP") {
+                return `Peserta didik memiliki tingkat keaktifan dan kesiapan belajar yang heterogen, namun sebagian masih mengalami kendala dalam ${focusPhrase} secara kontekstual. Diperlukan pembelajaran kolaboratif berbasis visualisasi digital dan pemecahan masalah nyata agar siswa lebih terlibat aktif.`;
+            }
+            if (config.level === "SMK") {
+                return `Peserta didik memiliki minat praktik yang cukup baik dengan kemampuan akademik beragam, namun masih memerlukan penguatan dalam ${focusPhrase} sesuai konteks dunia kerja. Pembelajaran perlu memadukan simulasi interaktif dan studi kasus terapan agar kompetensi lebih terkuasai.`;
+            }
+            // SMA
+            return `Peserta didik memiliki kemampuan berpikir kritis dan kesiapan belajar yang beragam, tetapi sebagian masih kesulitan ${focusPhrase} secara analitis dan kontekstual. Pembelajaran perlu didukung media visual interaktif serta diskusi kolaboratif untuk memperdalam pemahaman konseptual.`;
+        }
+
+        // Susun kalimat Masalah Utama Pembelajaran secara otomatis berdasarkan TP & Topik
+        function buildMasalahUtamaAuto() {
+            const rawTp = document.getElementById('tujuanPembelajaran')?.value || "";
+            const rawTopik = document.getElementById('topik')?.value || "";
+
+            const coreTp = extractCoreTpPhrase(rawTp);
+            const topicClean = toSmartTitleCase(rawTopik);
+
+            if (coreTp && topicClean) {
+                return `Peserta didik belum mampu ${coreTp} secara kontekstual karena masih kesulitan mengaitkan konsep ${topicClean} dengan pengalaman nyata di lingkungan sekitar mereka, sehingga pemahaman cenderung bersifat hafalan.`;
+            }
+            if (coreTp) {
+                return `Peserta didik masih mengalami kesulitan untuk ${coreTp} secara mandiri dan bermakna, karena pembelajaran sebelumnya kurang mengaitkan konsep dengan konteks nyata yang dekat dengan keseharian siswa.`;
+            }
+            if (topicClean) {
+                return `Peserta didik kesulitan menghubungkan konsep ${topicClean} dengan permasalahan nyata di kehidupan sehari-hari, sehingga pemahaman masih bersifat abstrak dan hafalan.`;
+            }
+            return `Peserta didik kesulitan menghubungkan konsep yang dipelajari dengan permasalahan nyata di lingkungan sekitar mereka, sehingga pemahaman bersifat hafalan dan belum bermakna.`;
+        }
+
+        function updateKondisiStatusBadge() {
+            const badge = document.getElementById('kondisiStatusBadge');
+            if (!badge) return;
+            if (kondisiManualEdited) {
+                badge.textContent = "Diedit Manual";
+                badge.className = "text-[10px] font-medium text-amber-700 bg-amber-50 border border-amber-200 px-1.5 py-0.5 rounded-md";
+            } else {
+                badge.textContent = "Otomatis";
+                badge.className = "text-[10px] font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded-md";
+            }
+        }
+
+        function syncKondisiKelas(silent = false) {
+            const el = document.getElementById('kondisiKelas');
+            if (!el) return;
+            el.value = buildKondisiKelasAuto();
+            kondisiManualEdited = false;
+            updateKondisiStatusBadge();
+            updatePreview();
+            if (!silent) {
+                showToast("Kondisi kelas berhasil disusun otomatis!");
+            }
+        }
+
+        function handleKondisiManualInput() {
+            const val = document.getElementById('kondisiKelas')?.value || "";
+            kondisiManualEdited = val.trim() !== "";
+            updateKondisiStatusBadge();
+            updatePreview();
+        }
+
+        function handleAutoSyncKondisiToggle() {
+            const isAuto = document.getElementById('autoSyncKondisi')?.checked;
+            if (isAuto) {
+                if (!kondisiManualEdited) {
+                    const el = document.getElementById('kondisiKelas');
+                    if (el) el.value = buildKondisiKelasAuto();
+                    updatePreview();
+                }
+                showToast("Auto-Sync aktif untuk Kondisi Kelas");
+            } else {
+                showToast("Auto-Sync dinonaktifkan untuk Kondisi Kelas");
+            }
+        }
+
+        function updateMasalahStatusBadge() {
+            const badge = document.getElementById('masalahStatusBadge');
+            if (!badge) return;
+            if (masalahManualEdited) {
+                badge.textContent = "Diedit Manual";
+                badge.className = "text-[10px] font-medium text-amber-700 bg-amber-50 border border-amber-200 px-1.5 py-0.5 rounded-md";
+            } else {
+                badge.textContent = "Selaras TP";
+                badge.className = "text-[10px] font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded-md";
+            }
+        }
+
+        function syncMasalahUtama(silent = false) {
+            const el = document.getElementById('masalahUtama');
+            if (!el) return;
+            el.value = buildMasalahUtamaAuto();
+            masalahManualEdited = false;
+            updateMasalahStatusBadge();
+            updatePreview();
+            if (!silent) {
+                showToast("Masalah utama pembelajaran disesuaikan dengan TP!");
+            }
+        }
+
+        function handleMasalahManualInput() {
+            const val = document.getElementById('masalahUtama')?.value || "";
+            masalahManualEdited = val.trim() !== "";
+            updateMasalahStatusBadge();
+            updatePreview();
+        }
+
+        function handleAutoSyncMasalahToggle() {
+            const isAuto = document.getElementById('autoSyncMasalah')?.checked;
+            if (isAuto) {
+                if (!masalahManualEdited) {
+                    const el = document.getElementById('masalahUtama');
+                    if (el) el.value = buildMasalahUtamaAuto();
+                    updatePreview();
+                }
+                showToast("Auto-Sync TP aktif untuk Masalah Utama");
+            } else {
+                showToast("Auto-Sync TP dinonaktifkan untuk Masalah Utama");
+            }
+        }
+
+        function updateRencanaStatusBadge() {
+            const badge = document.getElementById('rencanaStatusBadge');
+            if (!badge) return;
+            if (rencanaManualEdited) {
+                badge.textContent = "Diedit Manual";
+                badge.className = "text-[10px] font-medium text-amber-700 bg-amber-50 border border-amber-200 px-1.5 py-0.5 rounded-md";
+            } else {
+                badge.textContent = "Selaras TP";
+                badge.className = "text-[10px] font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded-md";
+            }
+        }
+
+        function syncRencanaPenggunaan(silent = false) {
+            const rencanaEl = document.getElementById('rencanaPenggunaan');
+            if (!rencanaEl) return;
+            rencanaEl.value = buildRencanaPenggunaanFromTp();
+            rencanaManualEdited = false;
+            updateRencanaStatusBadge();
+            updatePreview();
+            if (!silent) {
+                showToast("Rencana penggunaan di kelas disesuaikan dengan TP!");
+            }
+        }
+
+        function handleRencanaManualInput() {
+            const val = document.getElementById('rencanaPenggunaan')?.value || "";
+            rencanaManualEdited = val.trim() !== "";
+            updateRencanaStatusBadge();
+            updatePreview();
+        }
+
+        function handleRumahPendidikanContextChange() {
+            renderJenisKontenSuggestions();
+            const isAutoSync = document.getElementById('autoSyncRencana')?.checked;
+            if (isAutoSync && !rencanaManualEdited) {
+                const rencanaEl = document.getElementById('rencanaPenggunaan');
+                if (rencanaEl) {
+                    rencanaEl.value = buildRencanaPenggunaanFromTp();
+                }
+            }
+            updatePreview();
+        }
+
+        // Susun daftar pilihan rekomendasi Jenis Konten / Fitur berdasarkan Topik, TP, dan Ruang
+        function buildJenisKontenSuggestions() {
+            const rawTopik = document.getElementById('topik')?.value || "";
+            const rawTp = document.getElementById('tujuanPembelajaran')?.value || "";
+            const mapelVal = getSelectedMapel();
+            const topicClean = toSmartTitleCase(rawTopik) || toSmartTitleCase(mapelVal) || "Materi Pokok";
+            const combinedText = `${rawTopik} ${rawTp} ${mapelVal}`.toLowerCase();
+
+            const hasMurid = document.getElementById('ruangMurid')?.checked;
+            const hasGTK = document.getElementById('ruangGTK')?.checked;
+            const hasBahasa = document.getElementById('ruangBahasa')?.checked;
+
+            const suggestions = [];
+
+            // Rekomendasi berbasis Ruang Rumah Pendidikan
+            if (hasMurid || (!hasMurid && !hasGTK && !hasBahasa)) {
+                suggestions.push(`Buku digital dan materi pembelajaran ${topicClean}`);
+                suggestions.push(`Video pembelajaran konsep ${topicClean}`);
+                suggestions.push(`Bank soal latihan ${topicClean}`);
+                suggestions.push(`Lembar aktivitas / simulasi interaktif ${topicClean}`);
+            }
+
+            if (hasGTK) {
+                suggestions.push(`Panduan praktik pedagogis dan asesmen ${topicClean}`);
+                suggestions.push(`Inspirasi modul ajar & diferensiasi ${topicClean}`);
+            }
+
+            if (hasBahasa) {
+                suggestions.push(`Bacaan literasi dan glosarium istilah ${topicClean}`);
+                suggestions.push(`Bahan diskusi & penguatan kosakata ${topicClean}`);
+            }
+
+            // Rekomendasi spesifik berbasis kata kunci pada Topik & TP
+            if (/\bpeta\b|\blokasi\b|\bletak\b|\bgeograf|\bwilayah\b|\bprovinsi\b|\bkota\b|\bkabupaten\b/.test(combinedText)) {
+                suggestions.push("Peta interaktif wilayah, kota/kabupaten, dan provinsi");
+            }
+            if (/\bpecahan\b|\bdesimal\b|\bgeometri\b|\bbangun\b|\bpersamaan\b|\bstatistik\b|\bmatematika\b/.test(combinedText)) {
+                suggestions.push(`Contoh soal bertahap & visualisasi ${topicClean}`);
+            }
+            if (/\bekosistem\b|\benergi\b|\bperubahan\b|\bsuhu\b|\bgaya\b|\bipa\b|\bipas\b|\bsains\b/.test(combinedText)) {
+                suggestions.push(`Simulasi fenomena & pengamatan ${topicClean}`);
+            }
+            if (/\bteks\b|\bcerita\b|\bpuisi\b|\bmenulis\b|\bmembaca\b|\bbahasa\b|\bliterasi\b/.test(combinedText)) {
+                suggestions.push(`Teks bacaan model & latihan menyusun ${topicClean}`);
+            }
+
+            // Hilangkan duplikat & batasi agar ringkas
+            return [...new Set(suggestions)].slice(0, 6);
+        }
+
+        function renderJenisKontenSuggestions() {
+            const container = document.getElementById('jenisKontenSuggestions');
+            if (!container) return;
+
+            const items = buildJenisKontenSuggestions();
+            const currentVal = document.getElementById('jenisKonten')?.value || "";
+
+            container.innerHTML = '';
+
+            items.forEach(item => {
+                const isSelected = currentVal.toLowerCase().includes(item.toLowerCase());
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.onclick = () => toggleJenisKontenSuggestion(item);
+                btn.className = isSelected
+                    ? 'inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-kemdikbud-700 text-white border border-kemdikbud-800 shadow-2xs transition cursor-pointer'
+                    : 'inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-medium bg-white hover:bg-blue-50 text-slate-700 hover:text-kemdikbud-800 border border-slate-300 rounded-lg transition cursor-pointer';
+                btn.title = isSelected ? 'Klik untuk menghapus pilihan ini' : 'Klik untuk menambahkan ke Jenis Konten';
+                btn.innerHTML = `<span>${isSelected ? '✓' : '+'}</span><span>${escapeHtml(item)}</span>`;
+                container.appendChild(btn);
+            });
+        }
+
+        function toggleJenisKontenSuggestion(itemText) {
+            const textarea = document.getElementById('jenisKonten');
+            if (!textarea) return;
+
+            const bulletItem = `- ${itemText}`;
+            const currentLines = textarea.value
+                .split(/\r?\n/)
+                .map(l => l.trim())
+                .filter(Boolean);
+
+            const existingIndex = currentLines.findIndex(line => {
+                const cleanLine = line.replace(/^[-•*]\s*/, "").trim().toLowerCase();
+                return cleanLine === itemText.toLowerCase();
+            });
+
+            if (existingIndex >= 0) {
+                currentLines.splice(existingIndex, 1);
+                showToast(`"${itemText}" dihapus dari Jenis Konten`);
+            } else {
+                currentLines.push(bulletItem);
+                showToast(`"${itemText}" ditambahkan ke Jenis Konten`);
+            }
+
+            textarea.value = currentLines.join("\n");
+            handleRumahPendidikanContextChange();
+        }
+
+        function handleAutoSyncRencanaToggle() {
+            const isAutoSync = document.getElementById('autoSyncRencana')?.checked;
+            if (isAutoSync) {
+                if (!rencanaManualEdited) {
+                    const rencanaEl = document.getElementById('rencanaPenggunaan');
+                    if (rencanaEl) {
+                        rencanaEl.value = buildRencanaPenggunaanFromTp();
+                    }
+                    updatePreview();
+                }
+                showToast("Auto-Sync TP aktif untuk Rencana Penggunaan");
+            } else {
+                showToast("Auto-Sync TP dinonaktifkan untuk Rencana Penggunaan");
+            }
+        }
+
+        // Escape HTML characters safely for preview rendering
+        function escapeHtml(str) {
+            if (!str) return "";
+            return str
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // Render PID Feature Checkboxes & Purpose Inputs
+        function renderPidInputs() {
+            const container = document.getElementById('pid-container');
+            container.innerHTML = '';
+
+            pidState.forEach((item, index) => {
+                const wrapper = document.createElement('div');
+                wrapper.className = `p-3 rounded-xl border transition ${item.checked ? 'bg-white border-blue-200 shadow-2xs' : 'bg-slate-100/70 border-slate-200'}`;
+                
+                const badgeHtml = item.checked
+                    ? (item.manualEdited
+                        ? `<span class="text-[10px] font-medium text-amber-700 bg-amber-50 border border-amber-200 px-1.5 py-0.5 rounded-md">Diedit Manual</span>`
+                        : `<span class="text-[10px] font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded-md">Selaras TP</span>`)
+                    : '';
+
+                const syncSingleBtn = item.checked
+                    ? `<button type="button" onclick="syncSinglePidPurpose(${index})"
+                        class="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-semibold text-kemdikbud-700 bg-blue-50 hover:bg-blue-100 border border-blue-200 rounded-md transition cursor-pointer"
+                        title="Perbarui kalimat tujuan fitur ini mengikuti Tujuan Pembelajaran">
+                        <i data-lucide="sparkles" class="w-2.5 h-2.5"></i>
+                        <span>Sesuaikan dengan TP</span>
+                       </button>`
+                    : '';
+
+                wrapper.innerHTML = `
+                    <div class="flex flex-wrap items-center justify-between gap-2">
+                        <label class="flex items-center gap-2.5 cursor-pointer select-none">
+                            <input type="checkbox" ${item.checked ? 'checked' : ''} onchange="togglePidFeature(${index}, this.checked)"
+                                class="w-4 h-4 text-blue-600 rounded focus:ring-blue-500">
+                            <span class="text-xs font-semibold ${item.checked ? 'text-slate-900' : 'text-slate-600'}">${item.label}</span>
+                        </label>
+                        <div class="flex items-center gap-1.5">
+                            ${badgeHtml}
+                            ${syncSingleBtn}
+                        </div>
+                    </div>
+                    <div class="mt-2 pl-6 ${item.checked ? '' : 'opacity-65'}">
+                        <textarea rows="2"
+                            oninput="updatePidPurpose(${index}, this.value)"
+                            placeholder="${item.checked ? 'Isikan tujuan penggunaan fitur ini...' : 'ISIKAN TUJUAN PENGGUNAAN (otomatis terisi saat dicentang)'}"
+                            class="w-full px-2.5 py-1.5 text-xs bg-slate-50 focus:bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition leading-relaxed">${escapeHtml(item.purpose)}</textarea>
+                    </div>
+                `;
+                container.appendChild(wrapper);
+            });
+
+            if (window.lucide) {
+                lucide.createIcons();
+            }
+        }
+
+        function togglePidFeature(index, isChecked) {
+            pidState[index].checked = isChecked;
+            if (isChecked) {
+                const rawTp = document.getElementById('tujuanPembelajaran').value;
+                const rawTopik = document.getElementById('topik').value;
+                // Jika tujuan masih kosong atau belum diedit manual, isi otomatis menyesuaikan TP
+                if (!pidState[index].purpose.trim() || !pidState[index].manualEdited) {
+                    pidState[index].purpose = buildPidPurposeFromTp(pidState[index].id, rawTp, rawTopik);
+                    pidState[index].manualEdited = false;
+                }
+            }
+            renderPidInputs();
+            updatePreview();
+        }
+
+        function updatePidPurpose(index, val) {
+            pidState[index].purpose = val;
+            pidState[index].manualEdited = val.trim() !== "";
+            updatePreview();
+        }
+
+        // Perbarui 1 item PID tertentu mengikuti TP & Topik
+        function syncSinglePidPurpose(index) {
+            const rawTp = document.getElementById('tujuanPembelajaran').value;
+            const rawTopik = document.getElementById('topik').value;
+            pidState[index].purpose = buildPidPurposeFromTp(pidState[index].id, rawTp, rawTopik);
+            pidState[index].manualEdited = false;
+            renderPidInputs();
+            updatePreview();
+            showToast(`Tujuan "${pidState[index].label}" disesuaikan dengan TP`);
+        }
+
+        // Perbarui semua fitur PID yang dicentang mengikuti TP & Topik (menimpa editan manual)
+        function regenerateAllPidPurposes(silent = false) {
+            const rawTp = document.getElementById('tujuanPembelajaran').value;
+            const rawTopik = document.getElementById('topik').value;
+            let updatedCount = 0;
+
+            pidState = pidState.map(item => {
+                if (item.checked) {
+                    updatedCount++;
+                    return {
+                        ...item,
+                        manualEdited: false,
+                        purpose: buildPidPurposeFromTp(item.id, rawTp, rawTopik)
+                    };
+                }
+                return item;
+            });
+
+            renderPidInputs();
+            updatePreview();
+
+            if (!silent) {
+                if (updatedCount > 0) {
+                    showToast(`${updatedCount} fitur PID aktif berhasil disesuaikan dengan TP!`);
+                } else {
+                    showToast("Centang minimal satu fitur PID terlebih dahulu.");
+                }
+            }
+        }
+
+        // Dipanggil setiap kali input TP atau Topik diketik guru
+        function handleTpOrTopikInput() {
+            renderJenisKontenSuggestions();
+            const isAutoSyncKondisi = document.getElementById('autoSyncKondisi')?.checked;
+            if (isAutoSyncKondisi && !kondisiManualEdited) {
+                const kondisiEl = document.getElementById('kondisiKelas');
+                if (kondisiEl) {
+                    kondisiEl.value = buildKondisiKelasAuto();
+                }
+            }
+
+            const isAutoSyncMasalah = document.getElementById('autoSyncMasalah')?.checked;
+            if (isAutoSyncMasalah && !masalahManualEdited) {
+                const masalahEl = document.getElementById('masalahUtama');
+                if (masalahEl) {
+                    masalahEl.value = buildMasalahUtamaAuto();
+                }
+            }
+
+            const isAutoSyncPid = document.getElementById('autoSyncPid')?.checked;
+            if (isAutoSyncPid) {
+                const rawTp = document.getElementById('tujuanPembelajaran').value;
+                const rawTopik = document.getElementById('topik').value;
+                let anyChanged = false;
+
+                pidState = pidState.map(item => {
+                    if (item.checked && !item.manualEdited) {
+                        anyChanged = true;
+                        return {
+                            ...item,
+                            purpose: buildPidPurposeFromTp(item.id, rawTp, rawTopik)
+                        };
+                    }
+                    return item;
+                });
+
+                if (anyChanged) {
+                    renderPidInputs();
+                }
+            }
+
+            const isAutoSyncRencana = document.getElementById('autoSyncRencana')?.checked;
+            if (isAutoSyncRencana && !rencanaManualEdited) {
+                const rencanaEl = document.getElementById('rencanaPenggunaan');
+                if (rencanaEl) {
+                    rencanaEl.value = buildRencanaPenggunaanFromTp();
+                }
+            }
+
+            updatePreview();
+        }
+
+        function handleAutoSyncToggle() {
+            const isAutoSync = document.getElementById('autoSyncPid').checked;
+            if (isAutoSync) {
+                const rawTp = document.getElementById('tujuanPembelajaran').value;
+                const rawTopik = document.getElementById('topik').value;
+                pidState = pidState.map(item => {
+                    if (item.checked && !item.manualEdited) {
+                        return {
+                            ...item,
+                            purpose: buildPidPurposeFromTp(item.id, rawTp, rawTopik)
+                        };
+                    }
+                    return item;
+                });
+                renderPidInputs();
+                updatePreview();
+                showToast("Auto-Sync TP aktif: Tujuan PID otomatis mengikuti TP");
+            } else {
+                showToast("Auto-Sync TP dinonaktifkan");
+            }
+        }
+
+        function applyModelPreset(modelName) {
+            document.getElementById('modelPembelajaran').value = modelName;
+            if (MODEL_PRESETS[modelName]) {
+                document.getElementById('sintakModel').value = MODEL_PRESETS[modelName];
+            }
+            updatePreview();
+            showToast(`Preset model "${modelName}" diterapkan`);
+        }
+
+        // Menangani perubahan jenjang & mengunci Fase secara otomatis + mengisi daftar Mapel
+        function handleJenjangChange(preferredMapel = null) {
+            const jenjangVal = document.getElementById('jenjang').value;
+            const config = JENJANG_CONFIG[jenjangVal] || { fase: "Fase B", level: "SD" };
+
+            // Kunci fase otomatis
+            document.getElementById('fase').value = config.fase;
+
+            // Isi dropdown mata pelajaran sesuai jenjang
+            const mapelSelect = document.getElementById('mapelSelect');
+            const currentSelected = preferredMapel !== null ? preferredMapel : getSelectedMapel();
+            const mapelList = MAPEL_BY_LEVEL[config.level] || MAPEL_BY_LEVEL["SD"];
+
+            mapelSelect.innerHTML = '';
+            mapelList.forEach(mapel => {
+                const opt = document.createElement('option');
+                opt.value = mapel;
+                opt.textContent = mapel;
+                mapelSelect.appendChild(opt);
+            });
+
+            // Opsi ketik manual
+            const customOpt = document.createElement('option');
+            customOpt.value = CUSTOM_MAPEL_VALUE;
+            customOpt.textContent = "Lainnya (Ketik Manual...)";
+            mapelSelect.appendChild(customOpt);
+
+            const customWrapper = document.getElementById('mapelCustomWrapper');
+            const customInput = document.getElementById('mapelCustom');
+
+            if (currentSelected === "") {
+                mapelSelect.selectedIndex = 0;
+                customWrapper.classList.add('hidden');
+            } else if (mapelList.includes(currentSelected)) {
+                mapelSelect.value = currentSelected;
+                customWrapper.classList.add('hidden');
+            } else {
+                mapelSelect.value = CUSTOM_MAPEL_VALUE;
+                customWrapper.classList.remove('hidden');
+                customInput.value = currentSelected;
+            }
+
+            const isAutoSyncKondisi = document.getElementById('autoSyncKondisi')?.checked;
+            if (isAutoSyncKondisi && !kondisiManualEdited) {
+                const kondisiEl = document.getElementById('kondisiKelas');
+                if (kondisiEl) {
+                    kondisiEl.value = buildKondisiKelasAuto();
+                }
+            }
+
+            updatePreview();
+        }
+
+        function handleMapelChange() {
+            const mapelSelect = document.getElementById('mapelSelect');
+            const customWrapper = document.getElementById('mapelCustomWrapper');
+            if (mapelSelect.value === CUSTOM_MAPEL_VALUE) {
+                customWrapper.classList.remove('hidden');
+                document.getElementById('mapelCustom').focus();
+            } else {
+                customWrapper.classList.add('hidden');
+            }
+
+            const isAutoSyncKondisi = document.getElementById('autoSyncKondisi')?.checked;
+            if (isAutoSyncKondisi && !kondisiManualEdited) {
+                const kondisiEl = document.getElementById('kondisiKelas');
+                if (kondisiEl) {
+                    kondisiEl.value = buildKondisiKelasAuto();
+                }
+            }
+
+            updatePreview();
+        }
+
+        function getSelectedMapel() {
+            const mapelSelect = document.getElementById('mapelSelect');
+            if (!mapelSelect || !mapelSelect.value) return "";
+            if (mapelSelect.value === CUSTOM_MAPEL_VALUE) {
+                return document.getElementById('mapelCustom').value.trim();
+            }
+            return mapelSelect.value;
+        }
+
+        // Helper untuk memformat field isian (merah pada pratinjau HTML, polos pada teks salin/unduh)
+        function formatField(value, placeholder, isHtml, wrapBrackets = true) {
+            const trimmed = (value || "").trim();
+            const text = trimmed !== "" ? trimmed : placeholder;
+            const inner = isHtml ? `<span class="red-highlight">${escapeHtml(text)}</span>` : text;
+            return wrapBrackets ? `[${inner}]` : inner;
+        }
+
+        function getElementValue(id, fallback = "") {
+            const el = document.getElementById(id);
+            return el ? el.value : fallback;
+        }
+
+        function isElementChecked(id, fallback = false) {
+            const el = document.getElementById(id);
+            return el ? Boolean(el.checked) : fallback;
+        }
+
+        // Susun seluruh teks prompt (HTML untuk pratinjau & Plain Text untuk salin/unduh)
+        function buildPrompt(isHtml) {
+            const jenjang = formatField(getElementValue('jenjang'), "SD/III", isHtml);
+            const namaSekolah = formatField(getElementValue('namaSekolah'), "ISIKAN NAMA SEKOLAH", isHtml);
+            const mapel = formatField(getSelectedMapel(), "ISIKAN MATA PELAJARAN", isHtml);
+            const topik = formatField(getElementValue('topik'), "ISIKAN TOPIK/MATERI POKOK", isHtml);
+            const fase = formatField(getElementValue('fase'), "Fase B", isHtml);
+            const jumlahSiswa = formatField(getElementValue('jumlahSiswa'), "ISIKAN JUMLAH PESERTA DIDIK", isHtml);
+            const kondisiKelas = formatField(getElementValue('kondisiKelas'), "ISIKAN KONDISI KELAS", isHtml);
+            const alokasiWaktu = formatField(getElementValue('alokasiWaktu'), "ISIKAN ALOKASI WAKTU", isHtml);
+
+            const masalahUtama = formatField(getElementValue('masalahUtama'), "ISIKAN MASALAH UTAMA PEMBELAJARAN", isHtml);
+            const tujuanPembelajaran = formatField(getElementValue('tujuanPembelajaran'), "ISIKAN TUJUAN PEMBELAJARAN", isHtml);
+            const modelPembelajaran = formatField(getElementValue('modelPembelajaran'), "ISIKAN MODEL PEMBELAJARAN", isHtml);
+            const sintakModel = formatField(getElementValue('sintakModel'), "ISIKAN SINTAK MODEL PEMBELAJARAN", isHtml);
+
+            // Format PID section
+            const pidLines = pidState.map((item) => {
+                const checkStr = item.checked ? 'x' : ' ';
+                const checkDisplay = isHtml ? `[<span class="red-highlight">${checkStr}</span>]` : `[${checkStr}]`;
+                const purposeDisplay = formatField(item.purpose, "ISIKAN TUJUAN PENGGUNAAN", isHtml, true);
+
+                return `${checkDisplay} ${item.label}\n    Tujuan: ${purposeDisplay}`;
+            }).join('\n');
+
+            // Format Ruang Pendidikan checkboxes
+            const rMurid = isElementChecked('ruangMurid') ? 'x' : ' ';
+            const rGTK = isElementChecked('ruangGTK') ? 'x' : ' ';
+            const rBahasa = isElementChecked('ruangBahasa') ? 'x' : ' ';
+
+            const ruangLine = isHtml
+                ? `[<span class="red-highlight">${rMurid}</span>] Ruang Murid [<span class="red-highlight">${rGTK}</span>] Ruang GTK [<span class="red-highlight">${rBahasa}</span>] Ruang Bahasa`
+                : `[${rMurid}] Ruang Murid [${rGTK}] Ruang GTK [${rBahasa}] Ruang Bahasa`;
+
+            const jenisKonten = formatField(getElementValue('jenisKonten'), "ISIKAN JENIS KONTEN YANG DIPILIH", isHtml);
+            const rencanaPenggunaan = formatField(getElementValue('rencanaPenggunaan'), "ISIKAN RENCANA PENGGUNAAN DI KELAS", isHtml);
+
+            const jumlahPertemuan = formatField(getElementValue('jumlahPertemuan'), "ISIKAN JUMLAH PERTEMUAN", isHtml);
+            const durasiInti = formatField(getElementValue('durasiInti'), "ISIKAN DURASI INTI", isHtml);
+
+            return `## PERAN
+Bertindaklah sebagai perancang perencanaan pembelajaran mendalam yang profesional. Anda memahami Kurikulum Nasional, Capaian Pembelajaran (CP), model-model pembelajaran inovatif beserta sintaknya, serta ekosistem digital pendidikan Indonesia: Papan Interaktif Digital (PID/IFP) dan Rumah Pendidikan Kemendikdasmen (Ruang Murid, Ruang GTK, Ruang Bahasa).
+## KONTEKS KELAS
+Jenjang/Kelas \t\t: ${jenjang}
+Nama Sekolah \t\t: ${namaSekolah}
+Mata Pelajaran \t\t: ${mapel}
+Topik/Materi Pokok \t: ${topik}
+Fase Kurikulum Merdeka : ${fase}
+Jumlah Peserta Didik \t: ${jumlahSiswa}
+Kondisi Kelas \t\t: ${kondisiKelas}
+Alokasi Waktu \t\t: ${alokasiWaktu}
+## INPUT GURU - KEPUTUSAN PROFESIONAL (WAJIB DIISI)
+// Bagian ini adalah keputusan profesional guru yang menjadi landasan 
+// utama perencanaan. AI TIDAK BOLEH mengubah atau mengganti input ini.
+1. MASALAH UTAMA PEMBELAJARAN
+Deskripsikan masalah nyata yang Anda temukan di kelas terkait topik ini. 
+Masalah ini menjadi titik berangkat dan benang merah seluruh perencanaan.
+${masalahUtama}
+Contoh: murid kesulitan menghubungkan konsep yang dipelajari dengan permasalahan nyata di lingkungan sekitar mereka, sehingga pemahaman bersifat hafalan dan tidak bertahan lama.
+2. TUJUAN PEMBELAJARAN - HASIL ANALISIS CP
+// Tuliskan PERSIS tujuan pembelajaran yang telah Anda rumuskan 
+// dari hasil analisis Capaian Pembelajaran. AI wajib menggunakan
+// tujuan ini apa adanya - tidak menambah, tidak mengurangi.
+${tujuanPembelajaran}
+Contoh:
+TP-1: Peserta didik dapat menganalisis ... (sesuai CP Anda)
+TP-2: Peserta didik dapat merancang ... (sesuai CP Anda)
+TP-3: Peserta didik dapat merefleksikan ... (sesuai CP Anda)
+3. MODEL PEMBELAJARAN YANG DIPILIH
+// Tuliskan model pembelajaran yang paling sesuai dengan masalah 
+// dan tujuan pembelajaran Anda, beserta urutan sintaknya.
+Model Pembelajaran : ${modelPembelajaran}
+Contoh: Problem-Based Learning / Project-Based Learning / 
+        Discovery Learning / Inquiry Learning / dll.
+Sintak Model Pembelajaran:
+${sintakModel}
+Contoh sintak PBL:
+Sintak 1 - Orientasi peserta didik pada masalah
+Sintak 2 - Mengorganisasikan peserta didik untuk belajar
+Sintak 3 - Membimbing penyelidikan individual/kelompok
+Sintak 4 - Mengembangkan dan menyajikan hasil karya
+Sintak 5 - Menganalisis dan mengevaluasi proses pemecahan masalah
+4. FITUR PID YANG AKAN DIGUNAKAN
+// Beri tanda [x] pada fitur yang akan Anda gunakan dan tuliskan
+// tujuan penggunaannya. Pilih yang benar-benar akan dipakai.
+${pidLines}
+5. KONTEN RUMAH PENDIDIKAN YANG DIPILIH
+// Tentukan ruang dan jenis konten yang akan Anda integrasikan.
+Ruang yang digunakan:
+${ruangLine}
+Jenis konten/fitur yang dipilih:
+${jenisKonten}
+Contoh: Video pembelajaran / Modul ajar / Buku digital / Bank soal / Data kebahasaan / dll.
+Rencana penggunaan di kelas:
+${rencanaPenggunaan}
+## TUGAS AI – SUSUN DOKUMEN PERENCANAAN BERIKUT:
+// Gunakan SELURUH input guru di atas sebagai landasan yang tidak 
+// boleh diubah. AI merangkai, mengembangkan, dan menyempurnakan – 
+// bukan menentukan arah. Benang merah seluruh dokumen adalah
+// masalah utama pembelajaran yang telah di input guru
+1. IDENTIFIKASI
+a. Kesiapan peserta didik: jabarkan pengetahuan prasyarat, potensi miskonsepsi terkait topik, dan implikasi kondisi 
+   kelas terhadap strategi – berpijak pada masalah utama guru.
+b. Karakteristik materi: uraikan konsep inti, kompleksitas, dan keterkaitan lintas disiplin ilmu yang relevan.
+c. Dimensi Profil Lulusan: identifikasi 2-3 dimensi yang paling selaras dengan tujuan pembelajaran guru, jelaskan keterkaitan konkretnya dengan topik dan masalah yang diangkat.
+2. DESAIN PEMBELAJARAN
+a. Tujuan pembelajaran: sajikan PERSIS tujuan yang diinput guru dalam format yang rapi. Tidak boleh diubah atau ditambah.
+b. Rumusan masalah pembelajaran: kembangkan rumusan masalah yang autentik dan kontekstual berdasarkan masalah utama guru, selaras dengan tujuan pembelajaran, sesuai level peserta didik.
+c. Integrasi lintas disiplin: identifikasi minimal 2 mata pelajaran lain yang relevan, tunjukkan titik integrasinya secara konkret.
+d. Kerangka pembelajaran – kembangkan 4 elemen:
+   - Praktik pedagogis: jabarkan penerapan model pembelajaran yang dipilih guru beserta sintaks lengkapnya secara operasional dalam konteks topik dan masalah ini.
+   - Kemitraan pembelajaran: peran guru sebagai fasilitator, peran peserta didik sebagai pemecah masalah, peran mitra.
+   - Lingkungan pembelajaran: penataan fisik kelas yang mendukung model terpilih, dan kondisi psikologis yang dibangun.
+   - Pemanfaatan digital: jabarkan secara konkret penggunaan fitur PID dan konten Rumah Pendidikan yang dipilih guru – pada sintak keberapa, untuk tujuan apa, cara pelaksanaannya.
+## STANDAR KUALITAS
+- Tujuan pembelajaran guru tidak boleh diubah dalam bentuk apapun
+- Masalah utama guru menjadi benang merah dari awal hingga akhir
+- Sintak model pembelajaran tampil eksplisit, runtut, dan operasional
+- Fitur PID yang dipilih guru terintegrasi pada titik yang tepat
+- Konten Rumah Pendidikan pilihan guru tersebut substantif dan disertai cara akses serta waktu penggunaannya
+- Diferensiasi untuk kondisi kelas harus tersurat dalam dokumen
+- Seluruh konten kontekstual dengan kondisi Indonesia
+// Hasilkan dalam format dokumen perencanaan pembelajaran yang rapi.
+// Gunakan bahasa Indonesia formal, tidak kaku, dan operasional.
+## TUGAS ANDA – HASILKAN KOMPONEN BERIKUT:
+3. ASESMEN
+a. Asesmen Diagnostik
+   - 1 instrumen diagnostik awal (pertanyaan pemantik atau kuis singkat)
+   - Cara pelaksanaan menggunakan PID
+   - Cara membaca dan memanfaatkan hasilnya untuk diferensiasi
+b. Asesmen Formatif
+   - Minimal 2 instrumen formatif sepanjang proses pembelajaran
+   - Sertakan rubrik penilaian sederhana untuk masing-masing
+   - Cara pelaksanaan yang memanfaatkan PID dan/atau Ruang Murid
+c. Asesmen Sumatif
+   - 1 tugas/proyek autentik berbasis masalah (PBL)
+   - Rubrik penilaian lengkap (minimal 3 aspek dengan 4 level)
+   - Keterkaitan dengan dimensi profil lulusan yang telah ditentukan
+4. PENGALAMAN BELAJAR
+Rancang tahapan pembelajaran lengkap untuk ${jumlahPertemuan}:
+PERTEMUAN 1 (jika lebih dari 1 pertemuan):
+a. Kegiatan Pembuka (± 10 menit)
+   - Aktivitas menggembirakan untuk membangun antusias belajar
+   - Cara menampilkan pemantik masalah menggunakan PID
+   - Pertanyaan pemandu untuk mengaktifkan pengetahuan awal
+b. Kegiatan Inti (± ${durasiInti} menit)
+   - Tahap MEMAHAMI: aktivitas membangun konsep secara mendalam 
+     (sertakan cara memanfaatkan konten dari Ruang Murid/Rumah Pendidikan)
+   - Tahap MENGAPLIKASI: aktivitas pemecahan masalah PBL 
+     (sertakan titik penggunaan PID untuk kolaborasi dan presentasi)
+   - Tahap MEREFLEKSI: aktivitas refleksi terstruktur
+c. Kegiatan Penutup (± 5-10 menit)
+   - Sintesis pembelajaran hari ini
+   - Koneksi ke pertemuan berikutnya (jika ada)
+   - Cara menyimpan dan berbagi catatan PID kepada peserta didik
+## INTEGRASI RUMAH PENDIDIKAN
+Sertakan tabel khusus berisi:
+- Nama konten/fitur dari Rumah Pendidikan yang digunakan
+- Ruang yang diakses (Ruang Murid / Ruang GTK / Ruang Bahasa)
+- Cara akses oleh guru dan/atau peserta didik
+- Titik waktu penggunaan dalam pembelajaran
+- Tujuan penggunaan
+## STANDAR KUALITAS
+- Setiap tahap harus mencerminkan prinsip berkesadaran, bermakna, menggembirakan
+- Penggunaan PID harus terasa natural dan fungsional, bukan dipaksakan
+- Diferensiasi untuk peserta didik dengan kondisi khusus harus tersurat
+- Bahasa instruksi harus operasional – guru bisa langsung mengeksekusi
+// Hasilkan dalam format dokumen word yang rapi siap unduh.
+// Akhiri dengan satu paragraf penutup: gambaran suasana kelas yang diharapkan 
+// ketika rencana ini dieksekusi dengan baik.
+// Guru lain yang membaca dokumen ini harus dapat langsung mengeksekusi.`;
+        }
+
+        function updatePreview() {
+            const previewEl = document.getElementById('prompt-preview');
+            if (previewEl) {
+                previewEl.innerHTML = buildPrompt(true);
+            }
+            updateMandatoryStatusUI();
+        }
+
+        // Mengecek kelengkapan seluruh menu wajib isi (mengembalikan daftar label yang masih kosong)
+        function getMissingMandatoryFields() {
+            const missing = [];
+
+            if (!getElementValue('jenjang').trim()) missing.push("Jenjang / Kelas");
+            if (!getElementValue('namaSekolah').trim()) missing.push("Nama Sekolah");
+            if (!getElementValue('fase').trim()) missing.push("Fase Kurikulum Merdeka");
+            if (!getSelectedMapel()) {
+                missing.push("Mata Pelajaran");
+            }
+            if (!getElementValue('topik').trim()) missing.push("Topik / Materi Pokok");
+            if (!getElementValue('tujuanPembelajaran').trim()) missing.push("Tujuan Pembelajaran");
+            if (!getElementValue('jumlahSiswa').trim()) missing.push("Jumlah Peserta Didik");
+            if (!getElementValue('alokasiWaktu').trim()) missing.push("Alokasi Waktu");
+            if (!getElementValue('kondisiKelas').trim()) missing.push("Kondisi Kelas");
+            if (!getElementValue('masalahUtama').trim()) missing.push("Masalah Utama Pembelajaran");
+            if (!getElementValue('modelPembelajaran').trim()) missing.push("Model Pembelajaran");
+            if (!getElementValue('sintakModel').trim()) missing.push("Sintak Model Pembelajaran");
+
+            const checkedPids = pidState.filter(item => item.checked);
+            if (checkedPids.length === 0) {
+                missing.push("Pilihan Fitur PID (minimal 1)");
+            } else {
+                const pidWithoutPurpose = checkedPids.some(item => !(item.purpose || "").trim());
+                if (pidWithoutPurpose) {
+                    missing.push("Tujuan Penggunaan Fitur PID terpilih");
+                }
+            }
+
+            const hasAnyRuang = isElementChecked('ruangMurid') || isElementChecked('ruangGTK') || isElementChecked('ruangBahasa');
+            if (!hasAnyRuang) {
+                missing.push("Ruang Rumah Pendidikan (minimal 1)");
+            }
+
+            if (!getElementValue('jenisKonten').trim()) missing.push("Jenis Konten / Fitur Dipilih");
+            if (!getElementValue('rencanaPenggunaan').trim()) missing.push("Rencana Penggunaan di Kelas");
+            if (!getElementValue('jumlahPertemuan').trim()) missing.push("Jumlah Pertemuan");
+            if (!getElementValue('durasiInti').trim()) missing.push("Durasi Kegiatan Inti");
+
+            return missing;
+        }
+
+        // Memperbarui indikator status wajib isi pada toolbar pratinjau
+        function updateMandatoryStatusUI() {
+            const badge = document.getElementById('mandatory-status-badge');
+            if (!badge) return;
+
+            const missing = getMissingMandatoryFields();
+            if (missing.length === 0) {
+                badge.textContent = "Semua menu wajib terisi";
+                badge.className = "inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200";
+                badge.removeAttribute("title");
+            } else {
+                badge.textContent = `${missing.length} menu wajib belum diisi`;
+                badge.className = "inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold bg-rose-50 text-rose-700 border border-rose-200 cursor-pointer";
+                badge.title = "Belum terisi: " + missing.join(", ");
+                badge.onclick = () => {
+                    switchMobileTab('form');
+                    focusFirstMissingField();
+                };
+            }
+        }
+
+        // Mengarahkan fokus ke kolom wajib pertama yang masih kosong
+        function focusFirstMissingField() {
+            const fieldOrder = [
+                { id: 'jenjang', check: () => Boolean(getElementValue('jenjang').trim()) },
+                { id: 'namaSekolah', check: () => Boolean(getElementValue('namaSekolah').trim()) },
+                { id: 'mapelSelect', check: () => Boolean(getSelectedMapel()) },
+                { id: 'topik', check: () => Boolean(getElementValue('topik').trim()) },
+                { id: 'tujuanPembelajaran', check: () => Boolean(getElementValue('tujuanPembelajaran').trim()) },
+                { id: 'jumlahSiswa', check: () => Boolean(getElementValue('jumlahSiswa').trim()) },
+                { id: 'alokasiWaktu', check: () => Boolean(getElementValue('alokasiWaktu').trim()) },
+                { id: 'kondisiKelas', check: () => Boolean(getElementValue('kondisiKelas').trim()) },
+                { id: 'masalahUtama', check: () => Boolean(getElementValue('masalahUtama').trim()) },
+                { id: 'modelPembelajaran', check: () => Boolean(getElementValue('modelPembelajaran').trim()) },
+                { id: 'sintakModel', check: () => Boolean(getElementValue('sintakModel').trim()) },
+                { id: 'pid-container', check: () => {
+                    const checked = pidState.filter(i => i.checked);
+                    return checked.length > 0 && checked.every(i => Boolean((i.purpose || "").trim()));
+                }},
+                { id: 'ruangMurid', check: () => isElementChecked('ruangMurid') || isElementChecked('ruangGTK') || isElementChecked('ruangBahasa') },
+                { id: 'jenisKonten', check: () => Boolean(getElementValue('jenisKonten').trim()) },
+                { id: 'rencanaPenggunaan', check: () => Boolean(getElementValue('rencanaPenggunaan').trim()) },
+                { id: 'jumlahPertemuan', check: () => Boolean(getElementValue('jumlahPertemuan').trim()) },
+                { id: 'durasiInti', check: () => Boolean(getElementValue('durasiInti').trim()) }
+            ];
+
+            for (const item of fieldOrder) {
+                if (!item.check()) {
+                    const el = document.getElementById(item.id);
+                    if (el) {
+                        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        el.classList.add('ring-2', 'ring-rose-500', 'border-rose-500');
+                        if (typeof el.focus === 'function') {
+                            try { el.focus({ preventScroll: true }); } catch (e) {}
+                        }
+                        setTimeout(() => {
+                            el.classList.remove('ring-2', 'ring-rose-500', 'border-rose-500');
+                        }, 2400);
+                    }
+                    break;
+                }
+            }
+        }
+
+        // Validasi sebelum menyalin atau mengunduh prompt
+        function validateAllMandatoryBeforeAction() {
+            const missing = getMissingMandatoryFields();
+            if (missing.length > 0) {
+                switchMobileTab('form');
+                focusFirstMissingField();
+                showToast(`Wajib diisi semua (${missing.length} belum terisi): ${missing[0]}`);
+                return false;
+            }
+            return true;
+        }
+
+        function toggleRedHighlight() {
+            const isChecked = document.getElementById('toggleHighlight').checked;
+            const paper = document.getElementById('document-paper');
+            if (isChecked) {
+                paper.classList.remove('plain-text-mode');
+            } else {
+                paper.classList.add('plain-text-mode');
+            }
+        }
+
+        function copyPrompt() {
+            if (!validateAllMandatoryBeforeAction()) return;
+
+            const plainText = buildPrompt(false);
+            const textarea = document.createElement('textarea');
+            textarea.value = plainText;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+
+            try {
+                document.execCommand('copy');
+                showToast("Prompt lengkap berhasil disalin ke clipboard!");
+            } catch (err) {
+                showToast("Gagal menyalin teks. Silakan salin secara manual.");
+            } finally {
+                document.body.removeChild(textarea);
+            }
+        }
+
+        function downloadFile(type) {
+            if (!validateAllMandatoryBeforeAction()) return;
+
+            const plainText = buildPrompt(false);
+            const mapelClean = (getSelectedMapel() || "RPP").replace(/[^a-zA-Z0-9_-]/g, "_");
+            const filename = `Prompt_AI_RPP_${mapelClean}.${type}`;
+
+            let blob;
+            if (type === 'doc') {
+                const htmlContent = `
+                    <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+                    <head><meta charset='utf-8'><title>Prompt AI RPP Mendalam</title></head>
+                    <body style="font-family: Calibri, Arial, sans-serif; font-size: 11pt; line-height: 1.5; white-space: pre-wrap;">${escapeHtml(plainText)}</body>
+                    </html>`;
+                blob = new Blob(['\ufeff', htmlContent], { type: 'application/msword' });
+            } else {
+                blob = new Blob([plainText], { type: 'text/plain;charset=utf-8' });
+            }
+
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            showToast(`File "${filename}" berhasil diunduh!`);
+        }
+
+        function switchMobileTab(tab) {
+            const formPanel = document.getElementById('panel-form');
+            const previewPanel = document.getElementById('panel-preview');
+            const formBtn = document.getElementById('tab-form-btn');
+            const previewBtn = document.getElementById('tab-preview-btn');
+
+            if (tab === 'form') {
+                formPanel.classList.remove('hidden');
+                previewPanel.classList.add('hidden');
+                previewPanel.classList.remove('flex');
+
+                formBtn.classList.add('border-amber-400', 'text-white');
+                formBtn.classList.remove('border-transparent', 'text-blue-200');
+                previewBtn.classList.remove('border-amber-400', 'text-white');
+                previewBtn.classList.add('border-transparent', 'text-blue-200');
+            } else {
+                formPanel.classList.add('hidden');
+                previewPanel.classList.remove('hidden');
+                previewPanel.classList.add('flex');
+
+                previewBtn.classList.add('border-amber-400', 'text-white');
+                previewBtn.classList.remove('border-transparent', 'text-blue-200');
+                formBtn.classList.remove('border-amber-400', 'text-white');
+                formBtn.classList.add('border-transparent', 'text-blue-200');
+            }
+        }
+
+        let toastTimeout;
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const msgEl = document.getElementById('toast-message');
+            if (!toast || !msgEl) return;
+
+            msgEl.textContent = message;
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+                toast.classList.remove('translate-y-0', 'opacity-100');
+            }, 2800);
+        }
+
+        function resetToDefault() {
+            document.getElementById('jenjang').value = DEFAULT_DATA.jenjang;
+            document.getElementById('namaSekolah').value = DEFAULT_DATA.namaSekolah;
+            handleJenjangChange(DEFAULT_DATA.mapel);
+            document.getElementById('topik').value = DEFAULT_DATA.topik;
+            document.getElementById('jumlahSiswa').value = DEFAULT_DATA.jumlahSiswa;
+            document.getElementById('alokasiWaktu').value = DEFAULT_DATA.alokasiWaktu;
+            document.getElementById('tujuanPembelajaran').value = DEFAULT_DATA.tujuanPembelajaran;
+
+            const autoSyncKondisiEl = document.getElementById('autoSyncKondisi');
+            if (autoSyncKondisiEl) autoSyncKondisiEl.checked = true;
+            kondisiManualEdited = false;
+            updateKondisiStatusBadge();
+            document.getElementById('kondisiKelas').value = buildKondisiKelasAuto();
+
+            const autoSyncMasalahEl = document.getElementById('autoSyncMasalah');
+            if (autoSyncMasalahEl) autoSyncMasalahEl.checked = true;
+            masalahManualEdited = false;
+            updateMasalahStatusBadge();
+            document.getElementById('masalahUtama').value = buildMasalahUtamaAuto();
+
+            document.getElementById('modelPembelajaran').value = DEFAULT_DATA.modelPembelajaran;
+            document.getElementById('sintakModel').value = DEFAULT_DATA.sintakModel;
+
+            const autoSyncEl = document.getElementById('autoSyncPid');
+            if (autoSyncEl) autoSyncEl.checked = true;
+
+            pidState = JSON.parse(JSON.stringify(DEFAULT_DATA.pidFeatures)).map(item => ({
+                ...item,
+                manualEdited: false,
+                purpose: item.checked
+                    ? buildPidPurposeFromTp(item.id, DEFAULT_DATA.tujuanPembelajaran, DEFAULT_DATA.topik)
+                    : ""
+            }));
+            renderPidInputs();
+
+            document.getElementById('ruangMurid').checked = DEFAULT_DATA.ruangMurid;
+            document.getElementById('ruangGTK').checked = DEFAULT_DATA.ruangGTK;
+            document.getElementById('ruangBahasa').checked = DEFAULT_DATA.ruangBahasa;
+            document.getElementById('jenisKonten').value = DEFAULT_DATA.jenisKonten;
+            renderJenisKontenSuggestions();
+
+            const autoSyncRencanaEl = document.getElementById('autoSyncRencana');
+            if (autoSyncRencanaEl) autoSyncRencanaEl.checked = true;
+            rencanaManualEdited = false;
+            updateRencanaStatusBadge();
+            document.getElementById('rencanaPenggunaan').value = buildRencanaPenggunaanFromTp();
+
+            document.getElementById('jumlahPertemuan').value = DEFAULT_DATA.jumlahPertemuan;
+            document.getElementById('durasiInti').value = DEFAULT_DATA.durasiInti;
+
+            updatePreview();
+            showToast("Formulir dikembalikan ke contoh & diselaraskan dengan TP");
+        }
+
+        function clearForm() {
+            document.getElementById('jenjang').value = "SD/III";
+            document.getElementById('namaSekolah').value = "";
+            handleJenjangChange("");
+            document.getElementById('topik').value = "";
+            document.getElementById('jumlahSiswa').value = "";
+            kondisiManualEdited = false;
+            updateKondisiStatusBadge();
+            document.getElementById('kondisiKelas').value = "";
+            document.getElementById('alokasiWaktu').value = "";
+
+            masalahManualEdited = false;
+            updateMasalahStatusBadge();
+            document.getElementById('masalahUtama').value = "";
+            document.getElementById('tujuanPembelajaran').value = "";
+            document.getElementById('modelPembelajaran').value = "";
+            document.getElementById('sintakModel').value = "";
+
+            pidState = pidState.map(item => ({ ...item, checked: false, manualEdited: false, purpose: "" }));
+            renderPidInputs();
+
+            document.getElementById('ruangMurid').checked = false;
+            document.getElementById('ruangGTK').checked = false;
+            document.getElementById('ruangBahasa').checked = false;
+            document.getElementById('jenisKonten').value = "";
+            renderJenisKontenSuggestions();
+            rencanaManualEdited = false;
+            updateRencanaStatusBadge();
+            document.getElementById('rencanaPenggunaan').value = "";
+
+            document.getElementById('jumlahPertemuan').value = "";
+            document.getElementById('durasiInti').value = "";
+
+            updatePreview();
+            showToast("Semua isian formulir telah dikosongkan");
+        }
+
+        // Inisialisasi aplikasi saat halaman dimuat
+        window.addEventListener('DOMContentLoaded', () => {
+            if (window.lucide) {
+                lucide.createIcons();
+            }
+            updatePreview();
+            checkAccessState();
+        });
+    </script>
+</body>
+</html>
